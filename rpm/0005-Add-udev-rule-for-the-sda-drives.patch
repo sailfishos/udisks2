@@ -1,0 +1,30 @@
+From 871dfeeee0a65cbf574757b04c7519a484a37f70 Mon Sep 17 00:00:00 2001
+From: Raine Makelainen <raine.makelainen@jolla.com>
+Date: Mon, 12 Mar 2018 10:18:03 +0200
+Subject: [PATCH 5/5] Add udev rule for the sda drives
+
+Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
+---
+ data/80-udisks2.rules | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/data/80-udisks2.rules b/data/80-udisks2.rules
+index 2e6ed15..f738e89 100644
+--- a/data/80-udisks2.rules
++++ b/data/80-udisks2.rules
+@@ -41,8 +41,10 @@ ENV{ID_VENDOR}=="*IOMEGA*", ENV{ID_MODEL}=="*ZIP*", ENV{ID_DRIVE_FLOPPY_ZIP}="1"
+ # TODO: figure out if the drive supports SD and SDHC and what the current
+ # kind of media is - right now we just assume SD
+ KERNEL=="mmcblk[0-9]", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", ENV{ID_DRIVE_FLASH_SD}="1", ENV{ID_DRIVE_MEDIA_FLASH_SD}="1"
+-KERNEL=="mmcblk1*", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk",  ENV{ID_DRIVE_FLASH_SD}="1", ENV{ID_DRIVE_MEDIA_FLASH_SD}="1"
+-KERNEL=="mmcblk1*", SUBSYSTEM=="block", ACTION=="add", MODE="0660", TAG+="systemd", ENV{SYSTEMD_WANTS}="mount-sd@%k.service"
++
++# Match sda1 to mmcblk1 both of DEVTYPE==disk and SUBSYSTEM=="block"
++KERNEL=="mmcblk1*|sd[a-z][0-9]", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk",  ENV{ID_DRIVE_FLASH_SD}="1", ENV{ID_DRIVE_MEDIA_FLASH_SD}="1"
++KERNEL=="mmcblk1*|sd[a-z][0-9]", SUBSYSTEM=="block", ACTION=="add", MODE="0660", TAG+="systemd", ENV{SYSTEMD_WANTS}="mount-sd@%k.service"
+ 
+ # ditto for memstick
+ KERNEL=="msblk[0-9]|mspblk[0-9]", SUBSYSTEMS=="memstick", ENV{DEVTYPE}=="disk", ENV{ID_DRIVE_FLASH_MS}="1", ENV{ID_DRIVE_MEDIA_FLASH_MS}="1"
+-- 
+2.7.4
+

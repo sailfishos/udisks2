@@ -1,0 +1,54 @@
+From 8610b30f5a8ba4062f7db9b6243e900e86b9dfd5 Mon Sep 17 00:00:00 2001
+From: Raine Makelainen <raine.makelainen@jolla.com>
+Date: Tue, 6 Feb 2018 14:01:16 +0200
+Subject: [PATCH 3/5] Loosen up mount/unmount rights
+
+Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
+---
+ data/org.freedesktop.UDisks2.policy.in | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
+index d97528d..7b42f7e 100644
+--- a/data/org.freedesktop.UDisks2.policy.in
++++ b/data/org.freedesktop.UDisks2.policy.in
+@@ -16,8 +16,8 @@
+     <_description>Mount a filesystem</_description>
+     <_message>Authentication is required to mount the filesystem</_message>
+     <defaults>
+-      <allow_any>auth_admin</allow_any>
+-      <allow_inactive>auth_admin</allow_inactive>
++      <allow_any>yes</allow_any>
++      <allow_inactive>yes</allow_inactive>
+       <allow_active>yes</allow_active>
+     </defaults>
+   </action>
+@@ -38,9 +38,9 @@
+     <_description>Mount a filesystem from a device plugged into another seat</_description>
+     <_message>Authentication is required to mount the filesystem</_message>
+     <defaults>
+-      <allow_any>auth_admin</allow_any>
+-      <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_any>yes</allow_any>
++      <allow_inactive>yes</allow_inactive>
++      <allow_active>yes</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -63,9 +63,9 @@
+     <_description>Unmount a device mounted by another user</_description>
+     <_message>Authentication is required to unmount a filesystem mounted by another user</_message>
+     <defaults>
+-      <allow_any>auth_admin</allow_any>
+-      <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_any>yes</allow_any>
++      <allow_inactive>yes</allow_inactive>
++      <allow_active>yes</allow_active>
+     </defaults>
+   </action>
+ 
+-- 
+2.7.4
+
