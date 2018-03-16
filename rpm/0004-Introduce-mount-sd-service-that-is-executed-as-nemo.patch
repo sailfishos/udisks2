@@ -1,0 +1,61 @@
+From 860fa0325911456b880caa85db2d83b32efe0c3a Mon Sep 17 00:00:00 2001
+From: Raine Makelainen <raine.makelainen@jolla.com>
+Date: Tue, 6 Feb 2018 14:08:59 +0200
+Subject: [PATCH 4/5] Introduce mount-sd service that is executed as nemo
+
+Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
+---
+ data/80-udisks2.rules  |  3 +++
+ data/Makefile.am       |  2 +-
+ data/mount-sd@.service | 12 ++++++++++++
+ 3 files changed, 16 insertions(+), 1 deletion(-)
+ create mode 100644 data/mount-sd@.service
+
+diff --git a/data/80-udisks2.rules b/data/80-udisks2.rules
+index cc81484..2e6ed15 100644
+--- a/data/80-udisks2.rules
++++ b/data/80-udisks2.rules
+@@ -41,6 +41,9 @@ ENV{ID_VENDOR}=="*IOMEGA*", ENV{ID_MODEL}=="*ZIP*", ENV{ID_DRIVE_FLOPPY_ZIP}="1"
+ # TODO: figure out if the drive supports SD and SDHC and what the current
+ # kind of media is - right now we just assume SD
+ KERNEL=="mmcblk[0-9]", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", ENV{ID_DRIVE_FLASH_SD}="1", ENV{ID_DRIVE_MEDIA_FLASH_SD}="1"
++KERNEL=="mmcblk1*", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk",  ENV{ID_DRIVE_FLASH_SD}="1", ENV{ID_DRIVE_MEDIA_FLASH_SD}="1"
++KERNEL=="mmcblk1*", SUBSYSTEM=="block", ACTION=="add", MODE="0660", TAG+="systemd", ENV{SYSTEMD_WANTS}="mount-sd@%k.service"
++
+ # ditto for memstick
+ KERNEL=="msblk[0-9]|mspblk[0-9]", SUBSYSTEMS=="memstick", ENV{DEVTYPE}=="disk", ENV{ID_DRIVE_FLASH_MS}="1", ENV{ID_DRIVE_MEDIA_FLASH_MS}="1"
+ 
+diff --git a/data/Makefile.am b/data/Makefile.am
+index ddf9e3d..4c77ee5 100644
+--- a/data/Makefile.am
++++ b/data/Makefile.am
+@@ -15,7 +15,7 @@ dbusconf_DATA = $(dbusconf_in_files:.conf.in=.conf)
+ $(dbusconf_DATA): $(dbusconf_in_files) Makefile
+ 	cp $< $@
+ 
+-systemdservice_in_files = udisks2.service.in clean-mount-point@.service
++systemdservice_in_files = udisks2.service.in clean-mount-point@.service mount-sd@.service
+ 
+ if HAVE_SYSTEMD
+ systemdservicedir       = $(systemdsystemunitdir)
+diff --git a/data/mount-sd@.service b/data/mount-sd@.service
+new file mode 100644
+index 0000000..a981e30
+--- /dev/null
++++ b/data/mount-sd@.service
+@@ -0,0 +1,12 @@
++[Unit]
++Description=Handle udisks sd mount
++After=init-done.service dev-%i.device
++BindsTo=dev-%i.device
++Conflicts=rescue.target actdead.target factory-test.target
++
++[Service]
++User=nemo
++Type=oneshot
++RemainAfterExit=yes
++ExecStart=/usr/bin/udisksctl mount -b /dev/%i
++ExecStop=-/usr/bin/udisksctl unmount -b /dev/%i
+-- 
+2.7.4
+

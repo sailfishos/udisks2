@@ -1,0 +1,467 @@
+From a6052f97297004be33c65573e0d334ae4e00950f Mon Sep 17 00:00:00 2001
+From: Raine Makelainen <raine.makelainen@jolla.com>
+Date: Tue, 5 Dec 2017 11:17:50 +0200
+Subject: [PATCH 1/5] Disable libblockdev-mdraid and part support from source
+ tree
+
+Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
+---
+ configure.ac                    |  4 ----
+ src/Makefile.am                 |  1 -
+ src/udisksdaemon.c              | 23 +++++++++++++++++++++++
+ src/udiskslinuxblock.c          |  8 ++++++++
+ src/udiskslinuxmanager.c        | 24 ++++++++++++++++++++++++
+ src/udiskslinuxmdraidobject.c   | 10 ++++++++++
+ src/udiskslinuxpartition.c      | 28 ++++++++++++++++++++++++----
+ src/udiskslinuxpartitiontable.c | 10 ++++++++++
+ 8 files changed, 99 insertions(+), 9 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 488b27c..bc8f7af 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -575,10 +575,6 @@ AC_TRY_COMPILE([#include <blockdev/mdraid.h>], [],
+ CFLAGS=$SAVE_CFLAGS
+ LDFLAGS=$SAVE_LDFLAGS
+ 
+-if test "x$have_mdraid" = "xno"; then
+-  AC_MSG_ERROR([BLOCKDEV MDRAID support requested but header or library not found])
+-fi
+-
+ # libblockdev fs
+ SAVE_CFLAGS=$CFLAGS
+ SAVE_LDFLAGS=$LDFLAGS
+diff --git a/src/Makefile.am b/src/Makefile.am
+index c6e89ca..96ea3cc 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -67,7 +67,6 @@ libudisks_daemon_la_SOURCES =                                                  \
+ 	udiskslinuxdriveata.h          udiskslinuxdriveata.c                   \
+ 	udiskslinuxmdraidobject.h      udiskslinuxmdraidobject.c               \
+ 	udiskslinuxmdraidhelpers.h     udiskslinuxmdraidhelpers.c              \
+-	udiskslinuxmdraid.h            udiskslinuxmdraid.c                     \
+ 	udiskslinuxmanager.h           udiskslinuxmanager.c                    \
+ 	udiskslinuxfsinfo.h            udiskslinuxfsinfo.c                     \
+ 	udisksbasejob.h                udisksbasejob.c                         \
+diff --git a/src/udisksdaemon.c b/src/udisksdaemon.c
+index 9a013ec..aafd79e 100644
+--- a/src/udisksdaemon.c
++++ b/src/udisksdaemon.c
+@@ -19,6 +19,14 @@
+  *
+  */
+ 
++#ifndef BLOCKDEV_PART_ENABLED
++#define BLOCKDEV_PART_ENABLED 0
++#endif
++
++#ifndef BLOCKDEV_MDRAID_ENABLED
++#define BLOCKDEV_MDRAID_ENABLED 0
++#endif
++
+ #include "config.h"
+ #include <glib/gi18n-lib.h>
+ #include <blockdev/blockdev.h>
+@@ -248,18 +256,33 @@ udisks_daemon_constructed (GObject *object)
+   gboolean ret = FALSE;
+ 
+   /* NULL means no specific so_name (implementation) */
++#if BLOCKDEV_PART_ENABLED
+   BDPluginSpec part_plugin = {BD_PLUGIN_PART, NULL};
++#endif
+   BDPluginSpec swap_plugin = {BD_PLUGIN_SWAP, NULL};
+   BDPluginSpec loop_plugin = {BD_PLUGIN_LOOP, NULL};
++#if BLOCKDEV_MDRAID_ENABLED
+   BDPluginSpec mdraid_plugin = {BD_PLUGIN_MDRAID, NULL};
++#endif
+   BDPluginSpec fs_plugin = {BD_PLUGIN_FS, NULL};
+   BDPluginSpec crypto_plugin = {BD_PLUGIN_CRYPTO, NULL};
+ 
+   /* The core daemon needs the part, swap, loop, mdraid, fs and crypto plugins.
+      Additional plugins are required by various modules, but they make sure
+      plugins are loaded themselves. */
++#if BLOCKDEV_PART_ENABLED && BLOCKDEV_MDRAID_ENABLED
+   BDPluginSpec *plugins[] = {&part_plugin, &swap_plugin, &loop_plugin, &mdraid_plugin,
+                              &fs_plugin, &crypto_plugin, NULL};
++#elif BLOCKDEV_PART_ENABLED
++  BDPluginSpec *plugins[] = {&part_plugin, &swap_plugin, &loop_plugin
++                             &fs_plugin, &crypto_plugin, NULL};
++#elif BLOCKDEV_MDRAID_ENABLED
++  BDPluginSpec *plugins[] = {&swap_plugin, &loop_plugin, &mdraid_plugin,
++                             &fs_plugin, &crypto_plugin, NULL};
++#else
++  BDPluginSpec *plugins[] = {&swap_plugin, &loop_plugin, &fs_plugin, &crypto_plugin, NULL};
++#endif
++
+   BDPluginSpec **plugin_p = NULL;
+   error = NULL;
+ 
+diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
+index 3ac48da..9477499 100644
+--- a/src/udiskslinuxblock.c
++++ b/src/udiskslinuxblock.c
+@@ -20,6 +20,10 @@
+ 
+ #define _GNU_SOURCE /* for O_DIRECT */
+ 
++#ifndef BLOCKDEV_PART_ENABLED
++#define BLOCKDEV_PART_ENABLED 0
++#endif
++
+ #include "config.h"
+ #include <glib/gi18n-lib.h>
+ 
+@@ -37,7 +41,9 @@
+ #include <glib/gstdio.h>
+ #include <gio/gunixfdlist.h>
+ 
++#if BLOCKDEV_PART_ENABLED
+ #include <blockdev/part.h>
++#endif
+ #include <blockdev/fs.h>
+ 
+ #include "udiskslogging.h"
+@@ -2686,6 +2692,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+                                   void                   (*complete)(gpointer user_data),
+                                   gpointer                 complete_user_data)
+ {
++#if BLOCKDEV_PART_ENABLED
+   FormatWaitData *wait_data = NULL;
+   UDisksObject *object;
+   UDisksPartition *partition = NULL;
+@@ -3225,6 +3232,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+   g_clear_object (&partition_table);
+   g_clear_object (&partition);
+   g_clear_object (&object);
++#endif
+ }
+ 
+ struct FormatCompleteData {
+diff --git a/src/udiskslinuxmanager.c b/src/udiskslinuxmanager.c
+index 157746f..3113301 100644
+--- a/src/udiskslinuxmanager.c
++++ b/src/udiskslinuxmanager.c
+@@ -18,6 +18,10 @@
+  *
+  */
+ 
++#ifndef BLOCKDEV_MDRAID_ENABLED
++#define BLOCKDEV_MDRAID_ENABLED 0
++#endif
++
+ #include "config.h"
+ #include <glib/gi18n-lib.h>
+ #include <gio/gunixfdlist.h>
+@@ -35,7 +39,9 @@
+ 
+ #include <blockdev/loop.h>
+ #include <blockdev/fs.h>
++#if BLOCKDEV_MDRAID_ENABLED
+ #include <blockdev/mdraid.h>
++#endif
+ 
+ #include "udiskslogging.h"
+ #include "udiskslinuxmanager.h"
+@@ -487,7 +493,9 @@ wait_for_array_object (UDisksDaemon *daemon,
+   return ret;
+ }
+ 
++#if BLOCKDEV_MDRAID_ENABLED
+ static const gchar *raid_level_whitelist[] = {"raid0", "raid1", "raid4", "raid5", "raid6", "raid10", NULL};
++#endif
+ 
+ static gboolean
+ handle_mdraid_create (UDisksManager         *_object,
+@@ -498,6 +506,7 @@ handle_mdraid_create (UDisksManager         *_object,
+                       guint64                arg_chunk,
+                       GVariant              *arg_options)
+ {
++#if BLOCKDEV_MDRAID_ENABLED
+   UDisksLinuxManager *manager = UDISKS_LINUX_MANAGER (_object);
+   UDisksObject *array_object = NULL;
+   uid_t caller_uid;
+@@ -845,6 +854,9 @@ handle_mdraid_create (UDisksManager         *_object,
+   g_clear_object (&array_object);
+ 
+   return TRUE; /* returning TRUE means that we handled the method invocation */
++#else
++  return FALSE;
++#endif
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+@@ -935,6 +947,7 @@ handle_can_resize (UDisksManager         *object,
+                    GDBusMethodInvocation *invocation,
+                    const gchar           *type)
+ {
++#if BLOCKDEV_MDRAID_ENABLED
+   GError *error = NULL;
+   gchar *required_utility = NULL;
+   BDFsResizeFlags mode;
+@@ -956,6 +969,9 @@ handle_can_resize (UDisksManager         *object,
+   g_free (required_utility);
+ 
+   return TRUE;
++#else
++  return FALSE;
++#endif
+ }
+ 
+ static gboolean
+@@ -963,6 +979,7 @@ handle_can_check (UDisksManager         *object,
+                   GDBusMethodInvocation *invocation,
+                   const gchar           *type)
+ {
++#if BLOCKDEV_MDRAID_ENABLED
+   GError *error = NULL;
+   gchar *required_utility = NULL;
+   gboolean ret;
+@@ -983,6 +1000,9 @@ handle_can_check (UDisksManager         *object,
+   g_free (required_utility);
+ 
+   return TRUE;
++#else
++  return FALSE;
++#endif
+ }
+ 
+ static gboolean
+@@ -990,6 +1010,7 @@ handle_can_repair (UDisksManager         *object,
+                    GDBusMethodInvocation *invocation,
+                    const gchar           *type)
+ {
++#if BLOCKDEV_MDRAID_ENABLED
+   GError *error = NULL;
+   gchar *required_utility = NULL;
+   gboolean ret;
+@@ -1010,6 +1031,9 @@ handle_can_repair (UDisksManager         *object,
+   g_free (required_utility);
+ 
+   return TRUE;
++#else
++  return FALSE;
++#endif
+ }
+ 
+ 
+diff --git a/src/udiskslinuxmdraidobject.c b/src/udiskslinuxmdraidobject.c
+index 8014664..ef77232 100644
+--- a/src/udiskslinuxmdraidobject.c
++++ b/src/udiskslinuxmdraidobject.c
+@@ -36,6 +36,10 @@
+ #include "udiskslinuxdevice.h"
+ #include "udiskssimplejob.h"
+ 
++#ifndef BLOCKDEV_MDRAID_ENABLED
++#define BLOCKDEV_MDRAID_ENABLED 0
++#endif
++
+ /**
+  * SECTION:udiskslinuxmdraidobject
+  * @title: UDisksLinuxMDRaidObject
+@@ -430,7 +434,11 @@ mdraid_update (UDisksLinuxMDRaidObject  *object,
+                const gchar              *uevent_action,
+                GDBusInterface           *_iface)
+ {
++#if BLOCKDEV_MDRAID_ENABLED
+   return udisks_linux_mdraid_update (UDISKS_LINUX_MDRAID (object->iface_mdraid), object);
++#else
++  return FALSE;
++#endif
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+@@ -604,6 +612,7 @@ udisks_linux_mdraid_object_uevent (UDisksLinuxMDRaidObject *object,
+                                    UDisksLinuxDevice       *device,
+                                    gboolean                 is_member)
+ {
++#if BLOCKDEV_MDRAID_ENABLED
+   gboolean conf_changed = FALSE;
+ 
+   g_return_if_fail (UDISKS_IS_LINUX_MDRAID_OBJECT (object));
+@@ -720,6 +729,7 @@ udisks_linux_mdraid_object_uevent (UDisksLinuxMDRaidObject *object,
+     }
+  out:
+   ;
++#endif
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+diff --git a/src/udiskslinuxpartition.c b/src/udiskslinuxpartition.c
+index 5fa2048..70eb647 100644
+--- a/src/udiskslinuxpartition.c
++++ b/src/udiskslinuxpartition.c
+@@ -18,6 +18,10 @@
+  *
+  */
+ 
++#ifndef BLOCKDEV_PART_ENABLED
++#define BLOCKDEV_PART_ENABLED 0
++#endif
++
+ #include "config.h"
+ #include <glib/gi18n-lib.h>
+ 
+@@ -33,7 +37,9 @@
+ 
+ #include <glib/gstdio.h>
+ 
++#if BLOCKDEV_PART_ENABLED
+ #include <blockdev/part.h>
++#endif
+ 
+ #include "udiskslogging.h"
+ #include "udiskslinuxpartition.h"
+@@ -292,6 +298,7 @@ handle_set_flags (UDisksPartition       *partition,
+                   guint64                flags,
+                   GVariant              *options)
+ {
++#if BLOCKDEV_PART_ENABLED
+   UDisksBlock *block = NULL;
+   UDisksObject *object = NULL;
+   UDisksDaemon *daemon = NULL;
+@@ -419,7 +426,7 @@ handle_set_flags (UDisksPartition       *partition,
+   g_clear_object (&partition_table);
+   g_clear_object (&partition_table_block);
+   g_clear_object (&object);
+-
++#endif
+   return TRUE; /* returning TRUE means that we handled the method invocation */
+ }
+ 
+@@ -432,6 +439,7 @@ handle_set_name (UDisksPartition       *partition,
+                  const gchar           *name,
+                  GVariant              *options)
+ {
++#if BLOCKDEV_PART_ENABLED
+   UDisksBlock *block = NULL;
+   UDisksObject *object = NULL;
+   UDisksDaemon *daemon = NULL;
+@@ -536,7 +544,7 @@ handle_set_name (UDisksPartition       *partition,
+   g_clear_object (&partition_table);
+   g_clear_object (&partition_table_block);
+   g_clear_object (&object);
+-
++#endif
+   return TRUE; /* returning TRUE means that we handled the method invocation */
+ }
+ 
+@@ -593,6 +601,7 @@ udisks_linux_partition_set_type_sync (UDisksLinuxPartition  *partition,
+                                       GCancellable          *cancellable,
+                                       GError               **error)
+ {
++#if BLOCKDEV_PART_ENABLED
+   gboolean ret = FALSE;
+   UDisksBlock *block = NULL;
+   UDisksObject *object = NULL;
+@@ -724,8 +733,10 @@ udisks_linux_partition_set_type_sync (UDisksLinuxPartition  *partition,
+   g_clear_object (&partition_table_block);
+   g_clear_object (&object);
+   g_clear_error (&loc_error);
+-
+   return ret;
++#else
++  return FALSE;
++#endif
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+@@ -763,6 +774,7 @@ typedef struct
+   guint64      new_size;
+ } WaitForPartitionResizeData;
+ 
++#if BLOCKDEV_PART_ENABLED
+ static UDisksObject *
+ wait_for_partition_resize (UDisksDaemon *daemon,
+                            gpointer      user_data)
+@@ -785,6 +797,7 @@ wait_for_partition_resize (UDisksDaemon *daemon,
+ 
+   return object;
+ }
++#endif
+ 
+ /* runs in thread dedicated to handling @invocation */
+ static gboolean
+@@ -793,6 +806,7 @@ handle_resize (UDisksPartition       *partition,
+                guint64                size,
+                GVariant              *options)
+ {
++#if BLOCKDEV_PART_ENABLED
+   UDisksBlock *block = NULL;
+   UDisksObject *object = NULL;
+   UDisksDaemon *daemon = NULL;
+@@ -891,7 +905,9 @@ handle_resize (UDisksPartition       *partition,
+   g_clear_object (&partition_table_block);
+ 
+   return TRUE; /* returning TRUE means that we handled the method invocation */
+-
++#else
++  return FALSE;
++#endif
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+@@ -902,6 +918,7 @@ handle_delete (UDisksPartition       *partition,
+                GDBusMethodInvocation *invocation,
+                GVariant              *options)
+ {
++#if BLOCKDEV_PART_ENABLED
+   UDisksBlock *block = NULL;
+   UDisksObject *object = NULL;
+   UDisksDaemon *daemon = NULL;
+@@ -989,6 +1006,9 @@ handle_delete (UDisksPartition       *partition,
+   g_clear_object (&object);
+ 
+   return TRUE; /* returning TRUE means that we handled the method invocation */
++#else
++  return FALSE;
++#endif
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+diff --git a/src/udiskslinuxpartitiontable.c b/src/udiskslinuxpartitiontable.c
+index 7a92057..90c7cf2 100644
+--- a/src/udiskslinuxpartitiontable.c
++++ b/src/udiskslinuxpartitiontable.c
+@@ -18,6 +18,10 @@
+  *
+  */
+ 
++#ifndef BLOCKDEV_PART_ENABLED
++#define BLOCKDEV_PART_ENABLED 0
++#endif
++
+ #include "config.h"
+ #include <glib/gi18n-lib.h>
+ 
+@@ -31,7 +35,9 @@
+ 
+ #include <glib/gstdio.h>
+ 
++#if BLOCKDEV_PART_ENABLED
+ #include <blockdev/part.h>
++#endif
+ #include <blockdev/fs.h>
+ 
+ #include "udiskslogging.h"
+@@ -255,6 +261,7 @@ udisks_linux_partition_table_handle_create_partition (UDisksPartitionTable   *ta
+                                                       const gchar            *name,
+                                                       GVariant               *options)
+ {
++#if BLOCKDEV_PART_ENABLED
+   const gchar *action_id = NULL;
+   const gchar *message = NULL;
+   UDisksBlock *block = NULL;
+@@ -563,6 +570,9 @@ udisks_linux_partition_table_handle_create_partition (UDisksPartitionTable   *ta
+   if (part_spec)
+     bd_part_spec_free (part_spec);
+   return partition_object;
++#else
++  return NULL;
++#endif
+ }
+ 
+ static int
+-- 
+2.7.4
+
