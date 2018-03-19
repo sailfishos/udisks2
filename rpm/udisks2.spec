@@ -125,21 +125,21 @@ chrpath --delete %{buildroot}/%{_sbindir}/umount.udisks2
 chrpath --delete %{buildroot}/%{_bindir}/udisksctl
 chrpath --delete %{buildroot}/%{_libexecdir}/udisks2/udisksd
 
+mkdir -p %{buildroot}/%{_unitdir}/graphical.target.wants
+ln -s ../udisks2.service %{buildroot}/%{_unitdir}/graphical.target.wants/udisks2.service
+
 %find_lang udisks2
 
 %post -n %{name}
-%systemd_post udisks2.service || :
-%systemd_post clean-mount-point@.service || :
+systemctl daemon-reload || :
+systemctl reload-or-try-restart udisks2.service || :
 udevadm control --reload || :
 udevadm trigger || :
 
 %preun -n %{name}
-%systemd_preun udisks2.service || :
-%systemd_preun clean-mount-point@.service || :
-
-%postun -n %{name}
-%systemd_postun_with_restart udisks2.service || :
-%systemd_postun clean-mount-point@.service || :
+if [ "$1" -eq 0 ]; then
+    systemctl stop udisks2.service || :
+fi
 
 %post -n lib%{name} -p /sbin/ldconfig
 
@@ -154,6 +154,7 @@ udevadm trigger || :
 %{_sysconfdir}/dbus-1/system.d/org.freedesktop.UDisks2.conf
 %{_datadir}/bash-completion/completions/udisksctl
 %{_unitdir}/udisks2.service
+%{_unitdir}/graphical.target.wants/udisks2.service
 %{_unitdir}/clean-mount-point@.service
 %{_unitdir}/mount-sd@.service
 %{_udevrulesdir}/80-udisks2.rules
