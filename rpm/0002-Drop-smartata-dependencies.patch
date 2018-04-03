@@ -1,4 +1,4 @@
-From 9400a37acbe9672bf962b8edd5df18a93468c8bd Mon Sep 17 00:00:00 2001
+From c7aed86fe13037ff763428d812e312eba154f273 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Thu, 7 Dec 2017 13:15:34 +0200
 Subject: [PATCH 2/5] Drop smartata dependencies

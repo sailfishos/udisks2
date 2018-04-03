@@ -1,4 +1,4 @@
-From a6052f97297004be33c65573e0d334ae4e00950f Mon Sep 17 00:00:00 2001
+From 3d783c006bb77d9564f59f14d513de9eab6a2a0f Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 5 Dec 2017 11:17:50 +0200
 Subject: [PATCH 1/5] Disable libblockdev-mdraid and part support from source
@@ -9,12 +9,12 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  configure.ac                    |  4 ----
  src/Makefile.am                 |  1 -
  src/udisksdaemon.c              | 23 +++++++++++++++++++++++
- src/udiskslinuxblock.c          |  8 ++++++++
+ src/udiskslinuxblock.c          | 14 ++++++++++++++
  src/udiskslinuxmanager.c        | 24 ++++++++++++++++++++++++
  src/udiskslinuxmdraidobject.c   | 10 ++++++++++
  src/udiskslinuxpartition.c      | 28 ++++++++++++++++++++++++----
  src/udiskslinuxpartitiontable.c | 10 ++++++++++
- 8 files changed, 99 insertions(+), 9 deletions(-)
+ 8 files changed, 105 insertions(+), 9 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
 index 488b27c..bc8f7af 100644
@@ -97,7 +97,7 @@ index 9a013ec..aafd79e 100644
    error = NULL;
  
 diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
-index 3ac48da..9477499 100644
+index 3ac48da..09fa90a 100644
 --- a/src/udiskslinuxblock.c
 +++ b/src/udiskslinuxblock.c
 @@ -20,6 +20,10 @@
@@ -121,22 +121,48 @@ index 3ac48da..9477499 100644
  #include <blockdev/fs.h>
  
  #include "udiskslogging.h"
-@@ -2686,6 +2692,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
-                                   void                   (*complete)(gpointer user_data),
-                                   gpointer                 complete_user_data)
- {
+@@ -2722,7 +2728,10 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+   GVariant *config_items = NULL;
+   gboolean teardown_flag = FALSE;
+   gboolean no_discard_flag = FALSE;
++
 +#if BLOCKDEV_PART_ENABLED
-   FormatWaitData *wait_data = NULL;
-   UDisksObject *object;
-   UDisksPartition *partition = NULL;
-@@ -3225,6 +3232,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
-   g_clear_object (&partition_table);
-   g_clear_object (&partition);
-   g_clear_object (&object);
+   BDPartTableType part_table_type = BD_PART_TABLE_UNDEF;
 +#endif
- }
  
- struct FormatCompleteData {
+   error = NULL;
+   object = udisks_daemon_util_dup_object (block, &error);
+@@ -3083,11 +3092,13 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+         }
+     }
+ 
++#if BLOCKDEV_PART_ENABLED
+     if (g_strcmp0 (type, "dos") == 0)
+       part_table_type = BD_PART_TABLE_MSDOS;
+     else if (g_strcmp0 (type, "gpt") == 0)
+       part_table_type = BD_PART_TABLE_GPT;
+     if (part_table_type == BD_PART_TABLE_UNDEF)
++#endif
+       {
+         /* Build and run mkfs shell command */
+         const gchar *device = udisks_block_get_device (block_to_mkfs);
+@@ -3115,6 +3126,8 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+             goto out;
+           }
+       }
++
++#if BLOCKDEV_PART_ENABLED
+     else
+       {
+         /* Create the partition table. */
+@@ -3124,6 +3137,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+             goto out;
+           }
+       }
++#endif
+ 
+   /* The mkfs program may not generate all the uevents we need - so explicitly
+    * trigger an event here
 diff --git a/src/udiskslinuxmanager.c b/src/udiskslinuxmanager.c
 index 157746f..3113301 100644
 --- a/src/udiskslinuxmanager.c
