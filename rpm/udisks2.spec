@@ -41,6 +41,7 @@ BuildRequires: libblockdev-loop-devel   >= %{libblockdev_version}
 BuildRequires: libblockdev-swap-devel   >= %{libblockdev_version}
 BuildRequires: libblockdev-fs-devel     >= %{libblockdev_version}
 BuildRequires: libblockdev-crypto-devel >= %{libblockdev_version}
+BuildRequires: oneshot
 
 Requires: libblockdev        >= %{libblockdev_version}
 Requires: libblockdev-loop   >= %{libblockdev_version}
@@ -65,6 +66,8 @@ Requires: e2fsprogs
 #Requires: eject
 
 Requires: lib%{name} = %{version}-%{release}
+
+%{_oneshot_requires_post}
 
 Obsoletes: sd-utils < 0.1.6
 Provides: sd-utils >= 0.1.6
@@ -127,6 +130,9 @@ chrpath --delete %{buildroot}/%{_sbindir}/umount.udisks2
 chrpath --delete %{buildroot}/%{_bindir}/udisksctl
 chrpath --delete %{buildroot}/%{_libexecdir}/udisks2/udisksd
 
+mkdir -p %{buildroot}/%{_oneshotdir}/
+install -m 0755 ../rpm/udisks2-symlink-mount-path %{buildroot}/%{_oneshotdir}
+
 mkdir -p %{buildroot}/%{_unitdir}/graphical.target.wants
 ln -s ../udisks2.service %{buildroot}/%{_unitdir}/graphical.target.wants/udisks2.service
 
@@ -137,6 +143,8 @@ systemctl daemon-reload || :
 systemctl reload-or-try-restart udisks2.service || :
 udevadm control --reload || :
 udevadm trigger || :
+
+%{_bindir}/add-oneshot --late udisks2-symlink-mount-path || :
 
 %preun -n %{name}
 if [ "$1" -eq 0 ]; then
@@ -161,6 +169,7 @@ fi
 %{_unitdir}/mount-sd@.service
 %{_udevrulesdir}/80-udisks2.rules
 %{_sbindir}/umount.udisks2
+%{_oneshotdir}/*
 %dir %{_libexecdir}/udisks2
 %{_libexecdir}/udisks2/udisksd
 
