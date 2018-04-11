@@ -1,7 +1,7 @@
-From 3d783c006bb77d9564f59f14d513de9eab6a2a0f Mon Sep 17 00:00:00 2001
+From 2ed93f6461ef8c5facfec54e1f8a8d87a91612f9 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 5 Dec 2017 11:17:50 +0200
-Subject: [PATCH 1/5] Disable libblockdev-mdraid and part support from source
+Subject: [PATCH 1/6] Disable libblockdev-mdraid and part support from source
  tree
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
@@ -17,7 +17,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  8 files changed, 105 insertions(+), 9 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 488b27c..bc8f7af 100644
+index 488b27c1..bc8f7af1 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -575,10 +575,6 @@ AC_TRY_COMPILE([#include <blockdev/mdraid.h>], [],
@@ -32,7 +32,7 @@ index 488b27c..bc8f7af 100644
  SAVE_CFLAGS=$CFLAGS
  SAVE_LDFLAGS=$LDFLAGS
 diff --git a/src/Makefile.am b/src/Makefile.am
-index c6e89ca..96ea3cc 100644
+index c6e89ca2..96ea3cc1 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
 @@ -67,7 +67,6 @@ libudisks_daemon_la_SOURCES =                                                  \
@@ -44,7 +44,7 @@ index c6e89ca..96ea3cc 100644
  	udiskslinuxfsinfo.h            udiskslinuxfsinfo.c                     \
  	udisksbasejob.h                udisksbasejob.c                         \
 diff --git a/src/udisksdaemon.c b/src/udisksdaemon.c
-index 9a013ec..aafd79e 100644
+index 9a013ec9..aafd79ed 100644
 --- a/src/udisksdaemon.c
 +++ b/src/udisksdaemon.c
 @@ -19,6 +19,14 @@
@@ -97,7 +97,7 @@ index 9a013ec..aafd79e 100644
    error = NULL;
  
 diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
-index 3ac48da..09fa90a 100644
+index 3ac48da5..09fa90a0 100644
 --- a/src/udiskslinuxblock.c
 +++ b/src/udiskslinuxblock.c
 @@ -20,6 +20,10 @@
@@ -164,7 +164,7 @@ index 3ac48da..09fa90a 100644
    /* The mkfs program may not generate all the uevents we need - so explicitly
     * trigger an event here
 diff --git a/src/udiskslinuxmanager.c b/src/udiskslinuxmanager.c
-index 157746f..3113301 100644
+index 157746fc..31133019 100644
 --- a/src/udiskslinuxmanager.c
 +++ b/src/udiskslinuxmanager.c
 @@ -18,6 +18,10 @@
@@ -271,7 +271,7 @@ index 157746f..3113301 100644
  
  
 diff --git a/src/udiskslinuxmdraidobject.c b/src/udiskslinuxmdraidobject.c
-index 8014664..ef77232 100644
+index 8014664e..ef772320 100644
 --- a/src/udiskslinuxmdraidobject.c
 +++ b/src/udiskslinuxmdraidobject.c
 @@ -36,6 +36,10 @@
@@ -314,7 +314,7 @@ index 8014664..ef77232 100644
  
  /* ---------------------------------------------------------------------------------------------------- */
 diff --git a/src/udiskslinuxpartition.c b/src/udiskslinuxpartition.c
-index 5fa2048..70eb647 100644
+index 5fa20482..70eb6477 100644
 --- a/src/udiskslinuxpartition.c
 +++ b/src/udiskslinuxpartition.c
 @@ -18,6 +18,10 @@
@@ -446,7 +446,7 @@ index 5fa2048..70eb647 100644
  
  /* ---------------------------------------------------------------------------------------------------- */
 diff --git a/src/udiskslinuxpartitiontable.c b/src/udiskslinuxpartitiontable.c
-index 7a92057..90c7cf2 100644
+index 7a92057f..90c7cf24 100644
 --- a/src/udiskslinuxpartitiontable.c
 +++ b/src/udiskslinuxpartitiontable.c
 @@ -18,6 +18,10 @@
@@ -489,5 +489,5 @@ index 7a92057..90c7cf2 100644
  
  static int
 -- 
-2.7.4
+2.14.3
 

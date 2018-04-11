@@ -1,7 +1,7 @@
-From 3357f5f291d0ae07bdcb6a4b039fb967f208296c Mon Sep 17 00:00:00 2001
+From 3c65269d65fb0ea11b3480185e3bf13f325e8912 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 6 Feb 2018 14:01:16 +0200
-Subject: [PATCH 3/5] Loosen up mount/unmount rights
+Subject: [PATCH 3/6] Loosen up mount/unmount rights
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
-index d97528d..7b42f7e 100644
+index d97528d4..7b42f7e0 100644
 --- a/data/org.freedesktop.UDisks2.policy.in
 +++ b/data/org.freedesktop.UDisks2.policy.in
 @@ -16,8 +16,8 @@
@@ -50,5 +50,5 @@ index d97528d..7b42f7e 100644
    </action>
  
 -- 
-2.7.4
+2.14.3
 
