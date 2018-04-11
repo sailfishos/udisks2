@@ -18,6 +18,7 @@ Patch2: 0002-Drop-smartata-dependencies.patch
 Patch3: 0003-Loosen-up-mount-unmount-rights.patch
 Patch4: 0004-Introduce-mount-sd-service-that-is-executed-as-nemo.patch
 Patch5: 0005-Add-udev-rule-for-the-sda-drives.patch
+Patch6: 0006-Disable-zram-rule-for-now.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
@@ -99,6 +100,7 @@ dynamic library, which provides access to the udisksd daemon.
 %patch3 -p1 -b .loosen-up-rights
 %patch4 -p1 -b .mount-sd-service
 %patch5 -p1 -b .udev-rules-for-sda
+%patch6 -p1 -b .udev-disable-zram
 
 # Disable gtk-doc
 sed -i 's/SUBDIRS = data udisks src tools modules po doc/SUBDIRS = data udisks src tools modules po/' Makefile.am

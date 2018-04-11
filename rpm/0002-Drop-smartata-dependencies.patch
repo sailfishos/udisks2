@@ -1,7 +1,7 @@
-From c7aed86fe13037ff763428d812e312eba154f273 Mon Sep 17 00:00:00 2001
+From 8287ff270ce821ed03c4a89951cfe972a0332188 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Thu, 7 Dec 2017 13:15:34 +0200
-Subject: [PATCH 2/5] Drop smartata dependencies
+Subject: [PATCH 2/6] Drop smartata dependencies
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -10,7 +10,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  2 files changed, 18 insertions(+), 4 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index bc8f7af..52823f3 100644
+index bc8f7af1..52823f3e 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -166,10 +166,6 @@ PKG_CHECK_MODULES(POLKIT_AGENT_1, [polkit-agent-1 >= 0.102])
@@ -25,7 +25,7 @@ index bc8f7af..52823f3 100644
                    [PKG_CHECK_MODULES(LIBSYSTEMD_LOGIN, [libsystemd-login >= 44 libsystemd-daemon],
                    [have_libsystemd_login=yes],
 diff --git a/src/udiskslinuxdriveata.c b/src/udiskslinuxdriveata.c
-index 467f461..7829d44 100644
+index 467f4612..7829d44a 100644
 --- a/src/udiskslinuxdriveata.c
 +++ b/src/udiskslinuxdriveata.c
 @@ -18,6 +18,10 @@
@@ -118,5 +118,5 @@ index 467f461..7829d44 100644
  
  /* ---------------------------------------------------------------------------------------------------- */
 -- 
-2.7.4
+2.14.3
 

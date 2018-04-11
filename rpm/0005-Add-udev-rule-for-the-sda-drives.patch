@@ -1,7 +1,7 @@
-From 419f5f3299b68b663aad3b9de96f979610ddbe7e Mon Sep 17 00:00:00 2001
+From fd532c0758787d5f57e65ef3ad9520b550b173af Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Mon, 12 Mar 2018 10:18:03 +0200
-Subject: [PATCH 5/5] Add udev rule for the sda drives
+Subject: [PATCH 5/6] Add udev rule for the sda drives
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/data/80-udisks2.rules b/data/80-udisks2.rules
-index 2e6ed15..f738e89 100644
+index 2e6ed158..f738e897 100644
 --- a/data/80-udisks2.rules
 +++ b/data/80-udisks2.rules
 @@ -41,8 +41,10 @@ ENV{ID_VENDOR}=="*IOMEGA*", ENV{ID_MODEL}=="*ZIP*", ENV{ID_DRIVE_FLOPPY_ZIP}="1"
@@ -26,5 +26,5 @@ index 2e6ed15..f738e89 100644
  # ditto for memstick
  KERNEL=="msblk[0-9]|mspblk[0-9]", SUBSYSTEMS=="memstick", ENV{DEVTYPE}=="disk", ENV{ID_DRIVE_FLASH_MS}="1", ENV{ID_DRIVE_MEDIA_FLASH_MS}="1"
 -- 
-2.7.4
+2.14.3
 

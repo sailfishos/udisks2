@@ -1,7 +1,7 @@
-From 6a85f8d3ccff83e679e2ada575c3d879bb0a5b2f Mon Sep 17 00:00:00 2001
+From 1f3f452e09a5c3054f075bd9abdb74886d025346 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 6 Feb 2018 14:08:59 +0200
-Subject: [PATCH 4/5] Introduce mount-sd service that is executed as nemo
+Subject: [PATCH 4/6] Introduce mount-sd service that is executed as nemo
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -12,7 +12,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  create mode 100644 data/mount-sd@.service
 
 diff --git a/data/80-udisks2.rules b/data/80-udisks2.rules
-index cc81484..2e6ed15 100644
+index cc81484e..2e6ed158 100644
 --- a/data/80-udisks2.rules
 +++ b/data/80-udisks2.rules
 @@ -41,6 +41,9 @@ ENV{ID_VENDOR}=="*IOMEGA*", ENV{ID_MODEL}=="*ZIP*", ENV{ID_DRIVE_FLOPPY_ZIP}="1"
@@ -26,7 +26,7 @@ index cc81484..2e6ed15 100644
  KERNEL=="msblk[0-9]|mspblk[0-9]", SUBSYSTEMS=="memstick", ENV{DEVTYPE}=="disk", ENV{ID_DRIVE_FLASH_MS}="1", ENV{ID_DRIVE_MEDIA_FLASH_MS}="1"
  
 diff --git a/data/Makefile.am b/data/Makefile.am
-index ddf9e3d..4c77ee5 100644
+index ddf9e3d6..4c77ee56 100644
 --- a/data/Makefile.am
 +++ b/data/Makefile.am
 @@ -15,7 +15,7 @@ dbusconf_DATA = $(dbusconf_in_files:.conf.in=.conf)
@@ -40,7 +40,7 @@ index ddf9e3d..4c77ee5 100644
  systemdservicedir       = $(systemdsystemunitdir)
 diff --git a/data/mount-sd@.service b/data/mount-sd@.service
 new file mode 100644
-index 0000000..a981e30
+index 00000000..a981e303
 --- /dev/null
 +++ b/data/mount-sd@.service
 @@ -0,0 +1,12 @@
@@ -57,5 +57,5 @@ index 0000000..a981e30
 +ExecStart=/usr/bin/udisksctl mount -b /dev/%i
 +ExecStop=-/usr/bin/udisksctl unmount -b /dev/%i
 -- 
-2.7.4
+2.14.3
 
