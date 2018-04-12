@@ -13,6 +13,7 @@ License: GPLv2+
 Group:   System Environment/Libraries
 URL:     https://github.com/storaged-project/udisks
 Source0: %{name}-%{version}.tar.bz2
+Source1: udisks2-symlink-mount-path
 Patch1: 0001-Disable-libblockdev-mdraid-and-part-support-from-sou.patch
 Patch2: 0002-Drop-smartata-dependencies.patch
 Patch3: 0003-Loosen-up-mount-unmount-rights.patch
@@ -131,7 +132,7 @@ chrpath --delete %{buildroot}/%{_bindir}/udisksctl
 chrpath --delete %{buildroot}/%{_libexecdir}/udisks2/udisksd
 
 mkdir -p %{buildroot}/%{_oneshotdir}/
-install -m 0755 ../rpm/udisks2-symlink-mount-path %{buildroot}/%{_oneshotdir}
+install -m 0755 %{SOURCE1} %{buildroot}/%{_oneshotdir}
 
 mkdir -p %{buildroot}/%{_unitdir}/graphical.target.wants
 ln -s ../udisks2.service %{buildroot}/%{_unitdir}/graphical.target.wants/udisks2.service
