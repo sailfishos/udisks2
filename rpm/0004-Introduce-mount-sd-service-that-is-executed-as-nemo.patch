@@ -1,7 +1,7 @@
-From 1f3f452e09a5c3054f075bd9abdb74886d025346 Mon Sep 17 00:00:00 2001
+From a8f138d9bcaeb24e955b88b42b94de85af41112a Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 6 Feb 2018 14:08:59 +0200
-Subject: [PATCH 4/6] Introduce mount-sd service that is executed as nemo
+Subject: [PATCH 4/7] Introduce mount-sd service that is executed as nemo
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
