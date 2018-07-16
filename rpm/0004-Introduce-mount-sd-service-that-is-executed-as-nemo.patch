@@ -1,7 +1,7 @@
-From a8f138d9bcaeb24e955b88b42b94de85af41112a Mon Sep 17 00:00:00 2001
+From 297ddec9abf15899ebed74f187232dadae0f49fc Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 6 Feb 2018 14:08:59 +0200
-Subject: [PATCH 4/7] Introduce mount-sd service that is executed as nemo
+Subject: [PATCH 4/8] Introduce mount-sd service that is executed as nemo
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -57,5 +57,5 @@ index 00000000..a981e303
 +ExecStart=/usr/bin/udisksctl mount -b /dev/%i
 +ExecStop=-/usr/bin/udisksctl unmount -b /dev/%i
 -- 
-2.14.3
+2.17.1
 

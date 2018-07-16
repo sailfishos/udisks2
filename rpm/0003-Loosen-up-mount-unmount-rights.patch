@@ -1,7 +1,7 @@
-From 0dd3182fe80c7bdc28b2be5ab9b23782f015e1f3 Mon Sep 17 00:00:00 2001
+From 90d266f78e8b7f32adcd189d12aee699b0cb047c Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 6 Feb 2018 14:01:16 +0200
-Subject: [PATCH 3/7] Loosen up mount/unmount rights
+Subject: [PATCH 3/8] Loosen up mount/unmount rights
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -50,5 +50,5 @@ index d97528d4..7b42f7e0 100644
    </action>
  
 -- 
-2.14.3
+2.17.1
 
