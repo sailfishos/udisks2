@@ -21,7 +21,7 @@ Patch4: 0004-Introduce-mount-sd-service-that-is-executed-as-nemo.patch
 Patch5: 0005-Add-udev-rule-for-the-sda-drives.patch
 Patch6: 0006-Disable-zram-rule-for-now.patch
 Patch7: 0007-Create-mount-path-with-755-rights.patch
-Patch8: 0008-udisks2-Make-it-possible-to-format-from-another-seat.patch
+Patch8: 0008-Make-it-possible-to-format-from-another-seat.-Fixes-.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
