@@ -1,7 +1,7 @@
-From b878553a1f192deef54ea184c4aef3f55b3ab569 Mon Sep 17 00:00:00 2001
+From 1cc5f25e78e0b22134cdc175b32195f872cc0588 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Mon, 12 Mar 2018 10:18:03 +0200
-Subject: [PATCH 5/7] Add udev rule for the sda drives
+Subject: [PATCH 5/8] Add udev rule for the sda drives
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -26,5 +26,5 @@ index 2e6ed158..f738e897 100644
  # ditto for memstick
  KERNEL=="msblk[0-9]|mspblk[0-9]", SUBSYSTEMS=="memstick", ENV{DEVTYPE}=="disk", ENV{ID_DRIVE_FLASH_MS}="1", ENV{ID_DRIVE_MEDIA_FLASH_MS}="1"
 -- 
-2.14.3
+2.17.1
 
