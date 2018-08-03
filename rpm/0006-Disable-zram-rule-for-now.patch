@@ -1,7 +1,7 @@
-From 4667c9b0ce05d48e2b7002a3f6b198ca0207d8f1 Mon Sep 17 00:00:00 2001
+From 6cc6f7315474139959932ef477e74d29332d494d Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Wed, 11 Apr 2018 11:11:53 +0300
-Subject: [PATCH 6/8] Disable zram rule for now
+Subject: [PATCH 6/9] Disable zram rule for now
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
