@@ -22,6 +22,7 @@ Patch5: 0005-Add-udev-rule-for-the-sda-drives.patch
 Patch6: 0006-Disable-zram-rule-for-now.patch
 Patch7: 0007-Create-mount-path-with-755-rights.patch
 Patch8: 0008-Make-it-possible-to-format-from-another-seat.-Fixes-.patch
+Patch9: 0009-Make-it-possible-to-unlock-from-another-seat.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
@@ -109,6 +110,7 @@ dynamic library, which provides access to the udisksd daemon.
 %patch6 -p1 -b .udev-disable-zram
 %patch7 -p1 -b .mount-path-rights
 %patch8 -p1 -b .format-another-seat
+%patch9 -p1 -b .unlock-another-seat
 
 # Disable gtk-doc
 sed -i 's/SUBDIRS = data udisks src tools modules po doc/SUBDIRS = data udisks src tools modules po/' Makefile.am

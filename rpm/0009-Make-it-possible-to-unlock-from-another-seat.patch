@@ -1,8 +1,7 @@
-From 5775a7f9008849338d3da27dc93a92e6b72dfb84 Mon Sep 17 00:00:00 2001
+From a1e98f930a3906b6a5725aa5928bd61195d98cce Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
-Date: Mon, 16 Jul 2018 15:40:23 +0300
-Subject: [PATCH 8/9] Make it possible to format from another seat. Fixes
- JB#42414
+Date: Fri, 3 Aug 2018 09:39:20 +0300
+Subject: [PATCH 9/9] Make it possible to unlock from another seat
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -10,12 +9,12 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
-index 7b42f7e0..fedab426 100644
+index fedab426..acc15f48 100644
 --- a/data/org.freedesktop.UDisks2.policy.in
 +++ b/data/org.freedesktop.UDisks2.policy.in
-@@ -328,9 +328,9 @@
-     <_description>Modify a device</_description>
-     <_message>Authentication is required to modify a device plugged into another seat</_message>
+@@ -111,9 +111,9 @@
+     <_description>Unlock an encrypted device plugged into another seat</_description>
+     <_message>Authentication is required to unlock an encrypted device</_message>
      <defaults>
 -      <allow_any>auth_admin</allow_any>
 -      <allow_inactive>auth_admin</allow_inactive>
