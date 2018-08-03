@@ -29,6 +29,7 @@ BuildRequires: pkgconfig(gobject-introspection-1.0)
 BuildRequires: pkgconfig(polkit-agent-1) >= %{polkit_version}
 BuildRequires: pkgconfig(polkit-gobject-1) >= %{polkit_version}
 BuildRequires: pkgconfig(systemd) >= %{systemd_version}
+BuildRequires: pkgconfig(openssl)
 BuildRequires: gettext-devel
 BuildRequires: autoconf
 BuildRequires: automake
