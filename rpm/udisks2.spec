@@ -113,13 +113,13 @@ dynamic library, which provides access to the udisksd daemon.
 %patch8 -p1 -b .format-another-seat
 %patch9 -p1 -b .unlock-another-seat
 
+%build
 # Disable gtk-doc
 sed -i 's/SUBDIRS = data udisks src tools modules po doc/SUBDIRS = data udisks src tools modules po/' Makefile.am
 sed -i '/--enable-gtk-doc/d' Makefile.am
 sed -i '/doc\/Makefile/d' configure.ac
 sed -i '/GTK_DOC_CHECK/d' configure.ac
 
-%build
 glib-gettextize --force --copy
 intltoolize --force --copy --automake
 autoreconf -vfi -Wno-portability
