@@ -46,7 +46,7 @@ index 00000000..a981e303
 @@ -0,0 +1,12 @@
 +[Unit]
 +Description=Handle udisks sd mount
-+After=init-done.service dev-%i.device
++After=dev-%i.device
 +BindsTo=dev-%i.device
 +Conflicts=rescue.target actdead.target factory-test.target
 +
