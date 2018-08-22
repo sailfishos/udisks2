@@ -387,7 +387,7 @@ index 5fa20482..70eb6477 100644
 -
    return ret;
 +#else
-+  return FALSE;
++  return TRUE;
 +#endif
  }
  
