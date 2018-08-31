@@ -23,6 +23,7 @@ Patch6: 0006-Disable-zram-rule-for-now.patch
 Patch7: 0007-Create-mount-path-with-755-rights.patch
 Patch8: 0008-Make-it-possible-to-format-from-another-seat.-Fixes-.patch
 Patch9: 0009-Make-it-possible-to-unlock-from-another-seat.patch
+Patch10: 0010-Allow-Filesystem-TakeOwnership-operation.-Contribute.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
@@ -112,6 +113,7 @@ dynamic library, which provides access to the udisksd daemon.
 %patch7 -p1 -b .mount-path-rights
 %patch8 -p1 -b .format-another-seat
 %patch9 -p1 -b .unlock-another-seat
+%patch10 -p1 -b .filesystem-take-ownership
 
 %build
 # Disable gtk-doc

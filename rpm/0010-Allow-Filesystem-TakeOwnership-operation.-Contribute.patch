@@ -1,0 +1,27 @@
+From aa9a1cba46ab2084a71621a4b56eec9aae224a0f Mon Sep 17 00:00:00 2001
+From: Chris Adams <chris.adams@jollamobile.com>
+Date: Fri, 31 Aug 2018 11:35:34 +1000
+Subject: [PATCH 10/10] Allow Filesystem TakeOwnership operation. Contributes
+ to JB#42801
+
+Signed-off-by: Chris Adams <chris.adams@jolla.com>
+---
+ data/org.freedesktop.UDisks2.policy.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
+index acc15f48..026d86b2 100644
+--- a/data/org.freedesktop.UDisks2.policy.in
++++ b/data/org.freedesktop.UDisks2.policy.in
+@@ -78,7 +78,7 @@
+     <defaults>
+       <allow_any>auth_admin</allow_any>
+       <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_active>yes</allow_active>
+     </defaults>
+   </action>
+ 
+-- 
+2.17.1
+

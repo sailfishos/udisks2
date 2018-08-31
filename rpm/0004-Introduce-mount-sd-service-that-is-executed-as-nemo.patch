@@ -1,7 +1,7 @@
-From 34b034aefe6a1f1954402ba68da61d4e3385f736 Mon Sep 17 00:00:00 2001
+From 83ddf467ef60d46e80381b58bffd150a9c82ab6b Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 6 Feb 2018 14:08:59 +0200
-Subject: [PATCH 4/9] Introduce mount-sd service that is executed as nemo
+Subject: [PATCH 04/10] Introduce mount-sd service that is executed as nemo
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -40,7 +40,7 @@ index ddf9e3d6..4c77ee56 100644
  systemdservicedir       = $(systemdsystemunitdir)
 diff --git a/data/mount-sd@.service b/data/mount-sd@.service
 new file mode 100644
-index 00000000..a981e303
+index 00000000..c44deebd
 --- /dev/null
 +++ b/data/mount-sd@.service
 @@ -0,0 +1,12 @@
