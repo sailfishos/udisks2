@@ -1,0 +1,45 @@
+From 0c9198129b7c72874c2802bd4079e70fd008cddb Mon Sep 17 00:00:00 2001
+From: Chris Adams <chris.adams@jollamobile.com>
+Date: Fri, 31 Aug 2018 17:21:41 +1000
+Subject: [PATCH 11/11] Allow auth_self for active sessions for system device
+ operations. Contributes to JB#42802
+
+Signed-off-by: Chris Adams <chris.adams@jolla.com>
+---
+ data/org.freedesktop.UDisks2.policy.in | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
+index 026d86b2..f709da47 100644
+--- a/data/org.freedesktop.UDisks2.policy.in
++++ b/data/org.freedesktop.UDisks2.policy.in
+@@ -29,7 +29,7 @@
+     <defaults>
+       <allow_any>auth_admin</allow_any>
+       <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_active>auth_self</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -102,7 +102,7 @@
+     <defaults>
+       <allow_any>auth_admin</allow_any>
+       <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_active>auth_self</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -319,7 +319,7 @@
+     <defaults>
+       <allow_any>auth_admin</allow_any>
+       <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_active>auth_self</allow_active>
+     </defaults>
+   </action>
+ 
+-- 
+2.17.1
+

@@ -1,7 +1,7 @@
 From aa9a1cba46ab2084a71621a4b56eec9aae224a0f Mon Sep 17 00:00:00 2001
 From: Chris Adams <chris.adams@jollamobile.com>
 Date: Fri, 31 Aug 2018 11:35:34 +1000
-Subject: [PATCH 10/10] Allow Filesystem TakeOwnership operation. Contributes
+Subject: [PATCH 10/11] Allow Filesystem TakeOwnership operation. Contributes
  to JB#42801
 
 Signed-off-by: Chris Adams <chris.adams@jolla.com>
