@@ -1,4 +1,4 @@
-From c810cbae8bbdf5ca168170d37259f7f1a0534ec9 Mon Sep 17 00:00:00 2001
+From 18963bbaf1422255f24f3d71bc96733083d60e5c Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 18 Sep 2018 17:04:36 +0300
 Subject: [PATCH 10/10] Make it possible to encrypt mmcblk* (format with
@@ -10,10 +10,10 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 5 insertions(+)
 
 diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
-index 09fa90a0..996cde55 100644
+index 2a8ed305..87aa924f 100644
 --- a/src/udiskslinuxblock.c
 +++ b/src/udiskslinuxblock.c
-@@ -2129,8 +2129,13 @@ wait_for_luks_uuid (UDisksDaemon *daemon,
+@@ -2257,8 +2257,13 @@ wait_for_luks_uuid (UDisksDaemon *daemon,
    if (block == NULL)
      goto out;
  

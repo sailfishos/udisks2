@@ -1,4 +1,4 @@
-From 209bdc355e416d05292273d15e59303892391389 Mon Sep 17 00:00:00 2001
+From 760d8ddfd816c8c62038792373a27531e23ff458 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 6 Feb 2018 14:01:16 +0200
 Subject: [PATCH 03/10] Loosen up mount/unmount rights

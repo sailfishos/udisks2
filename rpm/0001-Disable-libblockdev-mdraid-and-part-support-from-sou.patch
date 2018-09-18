@@ -1,4 +1,4 @@
-From d2bb5ff5f9a26797f69c04bd8bd8966e670d1149 Mon Sep 17 00:00:00 2001
+From eed3d5281b6dec96c8d9ca137b21a0c7fe7bb99a Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 5 Dec 2017 11:17:50 +0200
 Subject: [PATCH 01/10] Disable libblockdev-mdraid and part support from source
@@ -17,10 +17,10 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  8 files changed, 105 insertions(+), 9 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 488b27c1..bc8f7af1 100644
+index 5f1b0af4..61972a62 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -575,10 +575,6 @@ AC_TRY_COMPILE([#include <blockdev/mdraid.h>], [],
+@@ -611,10 +611,6 @@ AC_TRY_COMPILE([#include <blockdev/mdraid.h>], [],
  CFLAGS=$SAVE_CFLAGS
  LDFLAGS=$SAVE_LDFLAGS
  
@@ -32,7 +32,7 @@ index 488b27c1..bc8f7af1 100644
  SAVE_CFLAGS=$CFLAGS
  SAVE_LDFLAGS=$LDFLAGS
 diff --git a/src/Makefile.am b/src/Makefile.am
-index c6e89ca2..96ea3cc1 100644
+index 7fd1943c..49c7e04c 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
 @@ -67,7 +67,6 @@ libudisks_daemon_la_SOURCES =                                                  \
@@ -44,7 +44,7 @@ index c6e89ca2..96ea3cc1 100644
  	udiskslinuxfsinfo.h            udiskslinuxfsinfo.c                     \
  	udisksbasejob.h                udisksbasejob.c                         \
 diff --git a/src/udisksdaemon.c b/src/udisksdaemon.c
-index 9a013ec9..aafd79ed 100644
+index 1f649d7c..eb404503 100644
 --- a/src/udisksdaemon.c
 +++ b/src/udisksdaemon.c
 @@ -19,6 +19,14 @@
@@ -62,7 +62,7 @@ index 9a013ec9..aafd79ed 100644
  #include "config.h"
  #include <glib/gi18n-lib.h>
  #include <blockdev/blockdev.h>
-@@ -248,18 +256,33 @@ udisks_daemon_constructed (GObject *object)
+@@ -269,18 +277,33 @@ udisks_daemon_constructed (GObject *object)
    gboolean ret = FALSE;
  
    /* NULL means no specific so_name (implementation) */
@@ -97,7 +97,7 @@ index 9a013ec9..aafd79ed 100644
    error = NULL;
  
 diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
-index 3ac48da5..09fa90a0 100644
+index 6a69bf3e..2a8ed305 100644
 --- a/src/udiskslinuxblock.c
 +++ b/src/udiskslinuxblock.c
 @@ -20,6 +20,10 @@
@@ -121,7 +121,7 @@ index 3ac48da5..09fa90a0 100644
  #include <blockdev/fs.h>
  
  #include "udiskslogging.h"
-@@ -2722,7 +2728,10 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+@@ -2889,7 +2895,10 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
    GVariant *config_items = NULL;
    gboolean teardown_flag = FALSE;
    gboolean no_discard_flag = FALSE;
@@ -132,7 +132,7 @@ index 3ac48da5..09fa90a0 100644
  
    error = NULL;
    object = udisks_daemon_util_dup_object (block, &error);
-@@ -3083,11 +3092,13 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+@@ -3263,11 +3272,13 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
          }
      }
  
@@ -146,7 +146,7 @@ index 3ac48da5..09fa90a0 100644
        {
          /* Build and run mkfs shell command */
          const gchar *device = udisks_block_get_device (block_to_mkfs);
-@@ -3115,6 +3126,8 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+@@ -3295,6 +3306,8 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
              goto out;
            }
        }
@@ -155,7 +155,7 @@ index 3ac48da5..09fa90a0 100644
      else
        {
          /* Create the partition table. */
-@@ -3124,6 +3137,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+@@ -3304,6 +3317,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
              goto out;
            }
        }
@@ -164,7 +164,7 @@ index 3ac48da5..09fa90a0 100644
    /* The mkfs program may not generate all the uevents we need - so explicitly
     * trigger an event here
 diff --git a/src/udiskslinuxmanager.c b/src/udiskslinuxmanager.c
-index 157746fc..31133019 100644
+index 8c2096a5..bdaf9dc0 100644
 --- a/src/udiskslinuxmanager.c
 +++ b/src/udiskslinuxmanager.c
 @@ -18,6 +18,10 @@
@@ -206,7 +206,7 @@ index 157746fc..31133019 100644
    UDisksLinuxManager *manager = UDISKS_LINUX_MANAGER (_object);
    UDisksObject *array_object = NULL;
    uid_t caller_uid;
-@@ -845,6 +854,9 @@ handle_mdraid_create (UDisksManager         *_object,
+@@ -846,6 +855,9 @@ handle_mdraid_create (UDisksManager         *_object,
    g_clear_object (&array_object);
  
    return TRUE; /* returning TRUE means that we handled the method invocation */
@@ -216,7 +216,7 @@ index 157746fc..31133019 100644
  }
  
  /* ---------------------------------------------------------------------------------------------------- */
-@@ -935,6 +947,7 @@ handle_can_resize (UDisksManager         *object,
+@@ -936,6 +948,7 @@ handle_can_resize (UDisksManager         *object,
                     GDBusMethodInvocation *invocation,
                     const gchar           *type)
  {
@@ -224,7 +224,7 @@ index 157746fc..31133019 100644
    GError *error = NULL;
    gchar *required_utility = NULL;
    BDFsResizeFlags mode;
-@@ -956,6 +969,9 @@ handle_can_resize (UDisksManager         *object,
+@@ -957,6 +970,9 @@ handle_can_resize (UDisksManager         *object,
    g_free (required_utility);
  
    return TRUE;
@@ -234,7 +234,7 @@ index 157746fc..31133019 100644
  }
  
  static gboolean
-@@ -963,6 +979,7 @@ handle_can_check (UDisksManager         *object,
+@@ -964,6 +980,7 @@ handle_can_check (UDisksManager         *object,
                    GDBusMethodInvocation *invocation,
                    const gchar           *type)
  {
@@ -242,7 +242,7 @@ index 157746fc..31133019 100644
    GError *error = NULL;
    gchar *required_utility = NULL;
    gboolean ret;
-@@ -983,6 +1000,9 @@ handle_can_check (UDisksManager         *object,
+@@ -984,6 +1001,9 @@ handle_can_check (UDisksManager         *object,
    g_free (required_utility);
  
    return TRUE;
@@ -252,7 +252,7 @@ index 157746fc..31133019 100644
  }
  
  static gboolean
-@@ -990,6 +1010,7 @@ handle_can_repair (UDisksManager         *object,
+@@ -991,6 +1011,7 @@ handle_can_repair (UDisksManager         *object,
                     GDBusMethodInvocation *invocation,
                     const gchar           *type)
  {
@@ -260,7 +260,7 @@ index 157746fc..31133019 100644
    GError *error = NULL;
    gchar *required_utility = NULL;
    gboolean ret;
-@@ -1010,6 +1031,9 @@ handle_can_repair (UDisksManager         *object,
+@@ -1011,6 +1032,9 @@ handle_can_repair (UDisksManager         *object,
    g_free (required_utility);
  
    return TRUE;
@@ -271,7 +271,7 @@ index 157746fc..31133019 100644
  
  
 diff --git a/src/udiskslinuxmdraidobject.c b/src/udiskslinuxmdraidobject.c
-index 8014664e..ef772320 100644
+index 51bdf708..0d8e96c1 100644
 --- a/src/udiskslinuxmdraidobject.c
 +++ b/src/udiskslinuxmdraidobject.c
 @@ -36,6 +36,10 @@
@@ -285,7 +285,7 @@ index 8014664e..ef772320 100644
  /**
   * SECTION:udiskslinuxmdraidobject
   * @title: UDisksLinuxMDRaidObject
-@@ -430,7 +434,11 @@ mdraid_update (UDisksLinuxMDRaidObject  *object,
+@@ -428,7 +432,11 @@ mdraid_update (UDisksLinuxMDRaidObject  *object,
                 const gchar              *uevent_action,
                 GDBusInterface           *_iface)
  {
@@ -297,7 +297,7 @@ index 8014664e..ef772320 100644
  }
  
  /* ---------------------------------------------------------------------------------------------------- */
-@@ -604,6 +612,7 @@ udisks_linux_mdraid_object_uevent (UDisksLinuxMDRaidObject *object,
+@@ -614,6 +622,7 @@ udisks_linux_mdraid_object_uevent (UDisksLinuxMDRaidObject *object,
                                     UDisksLinuxDevice       *device,
                                     gboolean                 is_member)
  {
@@ -305,7 +305,7 @@ index 8014664e..ef772320 100644
    gboolean conf_changed = FALSE;
  
    g_return_if_fail (UDISKS_IS_LINUX_MDRAID_OBJECT (object));
-@@ -720,6 +729,7 @@ udisks_linux_mdraid_object_uevent (UDisksLinuxMDRaidObject *object,
+@@ -730,6 +739,7 @@ udisks_linux_mdraid_object_uevent (UDisksLinuxMDRaidObject *object,
      }
   out:
    ;
@@ -446,7 +446,7 @@ index 5fa20482..7260c00f 100644
  
  /* ---------------------------------------------------------------------------------------------------- */
 diff --git a/src/udiskslinuxpartitiontable.c b/src/udiskslinuxpartitiontable.c
-index 7a92057f..90c7cf24 100644
+index a52d4084..9cdc2368 100644
 --- a/src/udiskslinuxpartitiontable.c
 +++ b/src/udiskslinuxpartitiontable.c
 @@ -18,6 +18,10 @@
@@ -470,7 +470,7 @@ index 7a92057f..90c7cf24 100644
  #include <blockdev/fs.h>
  
  #include "udiskslogging.h"
-@@ -255,6 +261,7 @@ udisks_linux_partition_table_handle_create_partition (UDisksPartitionTable   *ta
+@@ -254,6 +260,7 @@ udisks_linux_partition_table_handle_create_partition (UDisksPartitionTable   *ta
                                                        const gchar            *name,
                                                        GVariant               *options)
  {
@@ -478,7 +478,7 @@ index 7a92057f..90c7cf24 100644
    const gchar *action_id = NULL;
    const gchar *message = NULL;
    UDisksBlock *block = NULL;
-@@ -563,6 +570,9 @@ udisks_linux_partition_table_handle_create_partition (UDisksPartitionTable   *ta
+@@ -562,6 +569,9 @@ udisks_linux_partition_table_handle_create_partition (UDisksPartitionTable   *ta
    if (part_spec)
      bd_part_spec_free (part_spec);
    return partition_object;
