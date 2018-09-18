@@ -1,7 +1,7 @@
-From a1e98f930a3906b6a5725aa5928bd61195d98cce Mon Sep 17 00:00:00 2001
+From 7bd4f8232b8c726f11bd989c3249f19a80cfb46a Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Fri, 3 Aug 2018 09:39:20 +0300
-Subject: [PATCH 9/9] Make it possible to unlock from another seat
+Subject: [PATCH 09/10] Make it possible to unlock from another seat
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---

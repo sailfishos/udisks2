@@ -1,0 +1,32 @@
+From c810cbae8bbdf5ca168170d37259f7f1a0534ec9 Mon Sep 17 00:00:00 2001
+From: Raine Makelainen <raine.makelainen@jolla.com>
+Date: Tue, 18 Sep 2018 17:04:36 +0300
+Subject: [PATCH 10/10] Make it possible to encrypt mmcblk* (format with
+ encryption)
+
+Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
+---
+ src/udiskslinuxblock.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
+index 09fa90a0..996cde55 100644
+--- a/src/udiskslinuxblock.c
++++ b/src/udiskslinuxblock.c
+@@ -2129,8 +2129,13 @@ wait_for_luks_uuid (UDisksDaemon *daemon,
+   if (block == NULL)
+     goto out;
+ 
++  // Currently /dev/mmcblk devices won't get assigned with ID_FS_TYPE=crypto_LUKS when formatting encryption
++  // enabled whereas with /dev/sda devices crypto_LUKS will appear. Wait condition used only when formatting encryption
++  // enabled.
++#if 0
+   if (g_strcmp0 (udisks_block_get_id_type (block), "crypto_LUKS") != 0)
+     goto out;
++#endif
+ 
+   ret = g_object_ref (data->object);
+ 
+-- 
+2.17.1
+

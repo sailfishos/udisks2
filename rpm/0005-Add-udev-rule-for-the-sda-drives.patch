@@ -1,7 +1,7 @@
-From 009396002ac2592de4d5b6a7b7a9da36a321e272 Mon Sep 17 00:00:00 2001
+From 577b5a4c6ed031f08daed8d08c48e8942f09736a Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Mon, 12 Mar 2018 10:18:03 +0200
-Subject: [PATCH 5/9] Add udev rule for the sda drives
+Subject: [PATCH 05/10] Add udev rule for the sda drives
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
