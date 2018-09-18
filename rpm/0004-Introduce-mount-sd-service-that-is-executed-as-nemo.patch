@@ -1,4 +1,4 @@
-From 197d54eae6fdee57babc0071c712ca534c429d6d Mon Sep 17 00:00:00 2001
+From 25b0331b27801f54e24aba4b21738309ebf05062 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 6 Feb 2018 14:08:59 +0200
 Subject: [PATCH 04/10] Introduce mount-sd service that is executed as nemo
@@ -12,7 +12,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  create mode 100644 data/mount-sd@.service
 
 diff --git a/data/80-udisks2.rules b/data/80-udisks2.rules
-index cc81484e..2e6ed158 100644
+index e8f7c5ee..6e042977 100644
 --- a/data/80-udisks2.rules
 +++ b/data/80-udisks2.rules
 @@ -41,6 +41,9 @@ ENV{ID_VENDOR}=="*IOMEGA*", ENV{ID_MODEL}=="*ZIP*", ENV{ID_DRIVE_FLOPPY_ZIP}="1"
@@ -26,7 +26,7 @@ index cc81484e..2e6ed158 100644
  KERNEL=="msblk[0-9]|mspblk[0-9]", SUBSYSTEMS=="memstick", ENV{DEVTYPE}=="disk", ENV{ID_DRIVE_FLASH_MS}="1", ENV{ID_DRIVE_MEDIA_FLASH_MS}="1"
  
 diff --git a/data/Makefile.am b/data/Makefile.am
-index ddf9e3d6..4c77ee56 100644
+index b38928c8..85a231a0 100644
 --- a/data/Makefile.am
 +++ b/data/Makefile.am
 @@ -15,7 +15,7 @@ dbusconf_DATA = $(dbusconf_in_files:.conf.in=.conf)

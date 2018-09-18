@@ -1,4 +1,4 @@
-From 577b5a4c6ed031f08daed8d08c48e8942f09736a Mon Sep 17 00:00:00 2001
+From d6088c3ab42931929dbd0bb6fa6cf3e6706d8499 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Mon, 12 Mar 2018 10:18:03 +0200
 Subject: [PATCH 05/10] Add udev rule for the sda drives
@@ -9,7 +9,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/data/80-udisks2.rules b/data/80-udisks2.rules
-index 2e6ed158..f738e897 100644
+index 6e042977..0bb0fe47 100644
 --- a/data/80-udisks2.rules
 +++ b/data/80-udisks2.rules
 @@ -41,8 +41,10 @@ ENV{ID_VENDOR}=="*IOMEGA*", ENV{ID_MODEL}=="*ZIP*", ENV{ID_DRIVE_FLOPPY_ZIP}="1"

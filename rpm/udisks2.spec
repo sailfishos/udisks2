@@ -7,7 +7,7 @@
 
 Name:    udisks2
 Summary: Disk Manager
-Version: 2.7.5
+Version: 2.8.0
 Release: 1
 License: GPLv2+
 Group:   System Environment/Libraries
@@ -31,6 +31,7 @@ BuildRequires: pkgconfig(polkit-agent-1) >= %{polkit_version}
 BuildRequires: pkgconfig(polkit-gobject-1) >= %{polkit_version}
 BuildRequires: pkgconfig(systemd) >= %{systemd_version}
 BuildRequires: pkgconfig(openssl)
+BuildRequires: pkgconfig(mount) >= 2.30
 BuildRequires: gettext-devel
 BuildRequires: autoconf
 BuildRequires: automake
@@ -70,6 +71,7 @@ Requires: e2fsprogs
 #Requires: gdisk
 # For ejecting removable disks
 #Requires: eject
+Requires: libmount >= 2.30
 
 Requires: lib%{name} = %{version}-%{release}
 
