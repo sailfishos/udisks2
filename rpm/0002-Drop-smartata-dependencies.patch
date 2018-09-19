@@ -1,7 +1,7 @@
-From a74354efa70a5e5578e581e1e3a6df5d4fa1b2d2 Mon Sep 17 00:00:00 2001
+From fce6c2b7904eec9fbb4be5151178bc923d509ed3 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Thu, 7 Dec 2017 13:15:34 +0200
-Subject: [PATCH 02/10] Drop smartata dependencies
+Subject: [PATCH 2/8] Drop smartata dependencies
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
