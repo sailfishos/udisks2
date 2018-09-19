@@ -47,6 +47,7 @@ BuildRequires: libblockdev-devel        >= %{libblockdev_version}
 BuildRequires: libblockdev-loop-devel   >= %{libblockdev_version}
 BuildRequires: libblockdev-swap-devel   >= %{libblockdev_version}
 BuildRequires: libblockdev-fs-devel     >= %{libblockdev_version}
+BuildRequires: libblockdev-part-devel   >= %{libblockdev_version}
 BuildRequires: libblockdev-crypto-devel >= %{libblockdev_version}
 BuildRequires: oneshot
 
