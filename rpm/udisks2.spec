@@ -16,14 +16,12 @@ Source0: %{name}-%{version}.tar.bz2
 Source1: udisks2-symlink-mount-path
 Patch1: 0001-Disable-libblockdev-mdraid-and-part-support-from-sou.patch
 Patch2: 0002-Drop-smartata-dependencies.patch
-Patch3: 0003-Loosen-up-mount-unmount-rights.patch
+Patch3: 0003-Loosen-up-polkit-policies-to-work-from-another-seat.patch
 Patch4: 0004-Introduce-mount-sd-service-that-is-executed-as-nemo.patch
 Patch5: 0005-Add-udev-rule-for-the-sda-drives.patch
 Patch6: 0006-Disable-zram-rule-for-now.patch
 Patch7: 0007-Create-mount-path-with-755-rights.patch
-Patch8: 0008-Make-it-possible-to-format-from-another-seat.-Fixes-.patch
-Patch9: 0009-Make-it-possible-to-unlock-from-another-seat.patch
-Patch10: 0010-Make-it-possible-to-encrypt-mmcblk-format-with-encry.patch
+Patch8: 0008-Make-it-possible-to-encrypt-mmcblk-format-with-encry.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
@@ -114,9 +112,7 @@ dynamic library, which provides access to the udisksd daemon.
 %patch5 -p1 -b .udev-rules-for-sda
 %patch6 -p1 -b .udev-disable-zram
 %patch7 -p1 -b .mount-path-rights
-%patch8 -p1 -b .format-another-seat
-%patch9 -p1 -b .unlock-another-seat
-%patch10 -p1 -b .mmcblk-encryption
+%patch8 -p1 -b .mmcblk-encryption
 
 %build
 # Disable gtk-doc

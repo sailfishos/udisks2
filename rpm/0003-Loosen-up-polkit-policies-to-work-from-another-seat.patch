@@ -1,0 +1,116 @@
+From 43e2067c1e2df252e44b795a06773992c42be82d Mon Sep 17 00:00:00 2001
+From: Raine Makelainen <raine.makelainen@jolla.com>
+Date: Tue, 6 Feb 2018 14:01:16 +0200
+Subject: [PATCH 3/8] Loosen up polkit policies to work from another seat
+
+Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
+---
+ data/org.freedesktop.UDisks2.policy.in | 36 +++++++++++++-------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
+index d97528d4..eaf13908 100644
+--- a/data/org.freedesktop.UDisks2.policy.in
++++ b/data/org.freedesktop.UDisks2.policy.in
+@@ -16,8 +16,8 @@
+     <_description>Mount a filesystem</_description>
+     <_message>Authentication is required to mount the filesystem</_message>
+     <defaults>
+-      <allow_any>auth_admin</allow_any>
+-      <allow_inactive>auth_admin</allow_inactive>
++      <allow_any>yes</allow_any>
++      <allow_inactive>yes</allow_inactive>
+       <allow_active>yes</allow_active>
+     </defaults>
+   </action>
+@@ -29,7 +29,7 @@
+     <defaults>
+       <allow_any>auth_admin</allow_any>
+       <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_active>auth_self_keep</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -38,9 +38,9 @@
+     <_description>Mount a filesystem from a device plugged into another seat</_description>
+     <_message>Authentication is required to mount the filesystem</_message>
+     <defaults>
+-      <allow_any>auth_admin</allow_any>
+-      <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_any>yes</allow_any>
++      <allow_inactive>yes</allow_inactive>
++      <allow_active>yes</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -63,9 +63,9 @@
+     <_description>Unmount a device mounted by another user</_description>
+     <_message>Authentication is required to unmount a filesystem mounted by another user</_message>
+     <defaults>
+-      <allow_any>auth_admin</allow_any>
+-      <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_any>yes</allow_any>
++      <allow_inactive>yes</allow_inactive>
++      <allow_active>yes</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -102,7 +102,7 @@
+     <defaults>
+       <allow_any>auth_admin</allow_any>
+       <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_active>auth_self_keep</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -111,9 +111,9 @@
+     <_description>Unlock an encrypted device plugged into another seat</_description>
+     <_message>Authentication is required to unlock an encrypted device</_message>
+     <defaults>
+-      <allow_any>auth_admin</allow_any>
+-      <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_any>auth_self</allow_any>
++      <allow_inactive>auth_self</allow_inactive>
++      <allow_active>auth_self_keep</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -319,7 +319,7 @@
+     <defaults>
+       <allow_any>auth_admin</allow_any>
+       <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_active>auth_self_keep</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -328,9 +328,9 @@
+     <_description>Modify a device</_description>
+     <_message>Authentication is required to modify a device plugged into another seat</_message>
+     <defaults>
+-      <allow_any>auth_admin</allow_any>
+-      <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_any>auth_self</allow_any>
++      <allow_inactive>auth_self</allow_inactive>
++      <allow_active>auth_self_keep</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -384,7 +384,7 @@
+     <defaults>
+       <allow_any>auth_admin</allow_any>
+       <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin</allow_active>
++      <allow_active>auth_self</allow_active>
+     </defaults>
+   </action>
+ 
+-- 
+2.17.1
+
