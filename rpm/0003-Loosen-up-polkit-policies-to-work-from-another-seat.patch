@@ -1,7 +1,7 @@
-From 43e2067c1e2df252e44b795a06773992c42be82d Mon Sep 17 00:00:00 2001
+From 71a5b663652054e81e7f6e671f257e349a0fcf4e Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 6 Feb 2018 14:01:16 +0200
-Subject: [PATCH 3/8] Loosen up polkit policies to work from another seat
+Subject: [PATCH 3/9] Loosen up polkit policies to work from another seat
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -112,5 +112,5 @@ index d97528d4..eaf13908 100644
    </action>
  
 -- 
-2.17.1
+2.17.2
 

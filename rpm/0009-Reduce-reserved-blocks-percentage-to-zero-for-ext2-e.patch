@@ -1,0 +1,45 @@
+From e63cbc17f8afcc2f99c45150bbd366a8dccc5199 Mon Sep 17 00:00:00 2001
+From: Raine Makelainen <raine.makelainen@jolla.com>
+Date: Wed, 21 Nov 2018 17:27:59 +0200
+Subject: [PATCH 9/9] Reduce reserved blocks percentage to zero for
+ ext2/ext3/ext4 formatting
+
+Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
+---
+ src/udiskslinuxfsinfo.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/udiskslinuxfsinfo.c b/src/udiskslinuxfsinfo.c
+index d9e9f814..ba0049cd 100644
+--- a/src/udiskslinuxfsinfo.c
++++ b/src/udiskslinuxfsinfo.c
+@@ -70,7 +70,7 @@ const FSInfo _fs_info[] =
+       NULL,
+       TRUE,  /* supports_online_label_rename */
+       TRUE,  /* supports_owners */
+-      "mkfs.ext2 -F -L $LABEL $OPTIONS $DEVICE",
++      "mkfs.ext2 -m 0 -F -L $LABEL $OPTIONS $DEVICE",
+       "mkfs.ext2 -n -F -L $LABEL $OPTIONS $DEVICE",
+       "-E nodiscard", /* option_no_discard */
+     },
+@@ -80,7 +80,7 @@ const FSInfo _fs_info[] =
+       NULL,
+       TRUE,  /* supports_online_label_rename */
+       TRUE,  /* supports_owners */
+-      "mkfs.ext3 -F -L $LABEL $OPTIONS $DEVICE",
++      "mkfs.ext3 -m 0 -F -L $LABEL $OPTIONS $DEVICE",
+       "mkfs.ext3 -n -F -L $LABEL $OPTIONS $DEVICE",
+       "-E nodiscard", /* option_no_discard */
+     },
+@@ -90,7 +90,7 @@ const FSInfo _fs_info[] =
+       NULL,
+       TRUE,  /* supports_online_label_rename */
+       TRUE,  /* supports_owners */
+-      "mkfs.ext4 -F -L $LABEL $OPTIONS $DEVICE",
++      "mkfs.ext4 -m 0 -F -L $LABEL $OPTIONS $DEVICE",
+       "mkfs.ext4 -n -F -L $LABEL $OPTIONS $DEVICE",
+       "-E nodiscard", /* option_no_discard */
+     },
+-- 
+2.17.2
+

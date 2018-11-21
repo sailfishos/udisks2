@@ -1,7 +1,7 @@
-From a47bdb65dce36e359fd160a6b2612f650464d501 Mon Sep 17 00:00:00 2001
+From 40af3ef886ae4d069ded42d282033dbc4fd6fae8 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Wed, 11 Apr 2018 11:11:53 +0300
-Subject: [PATCH 6/8] Disable zram rule for now
+Subject: [PATCH 6/9] Disable zram rule for now
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/data/80-udisks2.rules b/data/80-udisks2.rules
-index 0bb0fe47..559ca268 100644
+index 88b3d3b9..ab0c0266 100644
 --- a/data/80-udisks2.rules
 +++ b/data/80-udisks2.rules
 @@ -174,7 +174,7 @@ KERNEL=="sr*", ENV{ID_VENDOR}=="Linux", ENV{ID_MODEL}=="File-CD_Gadget*", ENV{ID
@@ -22,5 +22,5 @@ index 0bb0fe47..559ca268 100644
  # Explicitly ignore ram block devices, they don't work with udev
  KERNEL=="ram*", ENV{UDISKS_IGNORE}="1"
 -- 
-2.17.1
+2.17.2
 
