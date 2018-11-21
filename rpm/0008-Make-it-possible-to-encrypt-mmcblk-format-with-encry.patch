@@ -1,7 +1,7 @@
-From faf545a45093c492fbc9cc40b18e63675bcf1e89 Mon Sep 17 00:00:00 2001
+From a22976986045a7af66c2d1985b5ae8d21fe9e5f4 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 18 Sep 2018 17:04:36 +0300
-Subject: [PATCH 8/9] Make it possible to encrypt mmcblk* (format with
+Subject: [PATCH 08/10] Make it possible to encrypt mmcblk* (format with
  encryption)
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>

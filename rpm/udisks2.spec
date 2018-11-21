@@ -23,6 +23,7 @@ Patch6: 0006-Disable-zram-rule-for-now.patch
 Patch7: 0007-Create-mount-path-with-755-rights.patch
 Patch8: 0008-Make-it-possible-to-encrypt-mmcblk-format-with-encry.patch
 Patch9: 0009-Reduce-reserved-blocks-percentage-to-zero-for-ext2-e.patch
+Patch10: 0010-Allow-rescan-for-inactive.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
@@ -115,6 +116,7 @@ dynamic library, which provides access to the udisksd daemon.
 %patch7 -p1 -b .mount-path-rights
 %patch8 -p1 -b .mmcblk-encryption
 %patch9 -p1 -b .mkfs-reserved-blocks-percentage
+%patch10 -p1 -b .allow-rescan
 
 %build
 # Disable gtk-doc
