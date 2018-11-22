@@ -1,7 +1,7 @@
-From 3b0df7a516a1523f96f43b906a470ad1de80c1a1 Mon Sep 17 00:00:00 2001
+From bae0c3e0cf68922829d1d55f3e910f4fdeba390f Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 5 Dec 2017 11:17:50 +0200
-Subject: [PATCH 1/9] Disable libblockdev-mdraid and part support from source
+Subject: [PATCH 01/10] Disable libblockdev-mdraid and part support from source
  tree
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>

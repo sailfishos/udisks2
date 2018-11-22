@@ -1,7 +1,7 @@
-From e63cbc17f8afcc2f99c45150bbd366a8dccc5199 Mon Sep 17 00:00:00 2001
+From 2cadb944916c23d290320076f13b420f65cb3a12 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Wed, 21 Nov 2018 17:27:59 +0200
-Subject: [PATCH 9/9] Reduce reserved blocks percentage to zero for
+Subject: [PATCH 09/10] Reduce reserved blocks percentage to zero for
  ext2/ext3/ext4 formatting
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>

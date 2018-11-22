@@ -1,0 +1,26 @@
+From 4c2e802eb6afa9040dba04c175e0724d7ae00ff3 Mon Sep 17 00:00:00 2001
+From: Raine Makelainen <raine.makelainen@jolla.com>
+Date: Wed, 21 Nov 2018 17:04:27 +0200
+Subject: [PATCH 10/10] Allow rescan for inactive
+
+Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
+---
+ data/org.freedesktop.UDisks2.policy.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
+index eaf13908..e5af21c1 100644
+--- a/data/org.freedesktop.UDisks2.policy.in
++++ b/data/org.freedesktop.UDisks2.policy.in
+@@ -340,7 +340,7 @@
+     <_message>Authentication is required to rescan a device</_message>
+     <defaults>
+       <allow_any>auth_admin</allow_any>
+-      <allow_inactive>auth_admin</allow_inactive>
++      <allow_inactive>yes</allow_inactive>
+       <allow_active>yes</allow_active>
+     </defaults>
+   </action>
+-- 
+2.17.2
+
