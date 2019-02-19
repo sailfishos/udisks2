@@ -24,6 +24,7 @@ Patch7: 0007-Create-mount-path-with-755-rights.patch
 Patch8: 0008-Make-it-possible-to-encrypt-mmcblk-format-with-encry.patch
 Patch9: 0009-Reduce-reserved-blocks-percentage-to-zero-for-ext2-e.patch
 Patch10: 0010-Allow-rescan-for-inactive.patch
+Patch11: 0011-Allow-whitelisting-filesystems-that-can-be-mounted.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
@@ -32,6 +33,8 @@ BuildRequires: pkgconfig(polkit-gobject-1) >= %{polkit_version}
 BuildRequires: pkgconfig(systemd) >= %{systemd_version}
 BuildRequires: pkgconfig(openssl)
 BuildRequires: pkgconfig(mount) >= 2.30
+BuildRequires: pkgconfig(dconf) >= 0.28.0
+
 BuildRequires: gettext-devel
 BuildRequires: autoconf
 BuildRequires: automake
@@ -117,6 +120,7 @@ dynamic library, which provides access to the udisksd daemon.
 %patch8 -p1 -b .mmcblk-encryption
 %patch9 -p1 -b .mkfs-reserved-blocks-percentage
 %patch10 -p1 -b .allow-rescan
+%patch11 -p1 -b .fs-whitelist
 
 %build
 # Disable gtk-doc
