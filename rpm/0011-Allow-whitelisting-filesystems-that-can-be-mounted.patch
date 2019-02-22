@@ -1,0 +1,158 @@
+From 44c58573ec01df21716f1c0b5db94a51ea7caf4b Mon Sep 17 00:00:00 2001
+From: Raine Makelainen <raine.makelainen@jolla.com>
+Date: Fri, 15 Feb 2019 15:15:48 +0200
+Subject: [PATCH 11/11] Allow whitelisting filesystems that can be mounted
+
+If whitelist is empty when 'well-know', '/proc/filesystems/', and
+'/etc/filesystems' are used like before.
+
+Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
+---
+ configure.ac                |  4 +++
+ src/Makefile.am             |  3 ++
+ src/udiskslinuxfilesystem.c | 65 +++++++++++++++++++++++++++++++++++--
+ 3 files changed, 70 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 6a482e4c..40e51633 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -161,6 +161,10 @@ PKG_CHECK_MODULES(POLKIT_AGENT_1, [polkit-agent-1 >= 0.102])
+ AC_SUBST(POLKIT_AGENT_1_CFLAGS)
+ AC_SUBST(POLKIT_AGENT_1_LIBS)
+ 
++PKG_CHECK_MODULES(DCONF, [dconf >= 0.28.0])
++AC_SUBST(DCONF_CFLAGS)
++AC_SUBST(DCONF_LIBS)
++
+ PKG_CHECK_MODULES(LIBMOUNT, [mount >= 2.30],
+                   [have_libmount=yes],
+                   [have_libmount=no])
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 49c7e04c..3f90270b 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -25,6 +25,7 @@ CPPFLAGS =                                                                     \
+ 	$(GIO_CFLAGS)                                                          \
+ 	$(GMODULE_CFLAGS)                                                      \
+ 	$(BLOCKDEV_CFLAGS)													   \
++	$(DCONF_CFLAGS)                                                        \
+ 	$(WARN_CFLAGS)                                                         \
+ 	$(NULL)
+ 
+@@ -130,6 +131,7 @@ libudisks_daemon_la_LIBADD =                                                   \
+ 	$(LIBELOGIND_LIBS)                                                     \
+ 	$(PART_LDFLAGS)                                                        \
+ 	$(SWAP_LIBS)                                                        \
++	$(DCONF_LIBS)                                                          \
+ 	$(top_builddir)/udisks/libudisks2.la                                   \
+ 	$(NULL)
+ 
+@@ -151,6 +153,7 @@ udisksd_LDADD =                                                                \
+ 	$(GIO_LIBS)                                                            \
+ 	$(GMODULE_LIBS)                                                        \
+ 	$(BLOCKDEV_LIBS)                                                       \
++	$(DCONF_LIBS)                                                          \
+ 	libudisks-daemon.la                                                    \
+ 	$(NULL)
+ 
+diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
+index 97f1d1a4..d42deaed 100644
+--- a/src/udiskslinuxfilesystem.c
++++ b/src/udiskslinuxfilesystem.c
+@@ -39,6 +39,8 @@
+ 
+ #include <glib/gstdio.h>
+ 
++#include <dconf.h>
++
+ #include "udiskslogging.h"
+ #include "udiskslinuxfilesystem.h"
+ #include "udiskslinuxfilesystemhelpers.h"
+@@ -306,15 +308,61 @@ is_well_known_filesystem (const gchar *fstype)
+   return ret;
+ }
+ 
++static gboolean read_whitelist = FALSE;
++static gsize num_whitelite_fs = 0;
++static gchar **whitelisted_filesystems = NULL;
++
++static void
++build_filesystem_whitelist (void)
++{
++  if (!read_whitelist)
++    {
++      DConfClient *client = dconf_client_new();
++      GVariant *value = dconf_client_read(client, "/org/freedesktop/udisks2/filesystem/whitelist");
++      if (value)
++        {
++          const GVariantType *type = g_variant_get_type(value);
++          if (g_variant_type_equal(type, G_VARIANT_TYPE_STRING_ARRAY))
++            {
++              whitelisted_filesystems = g_variant_dup_strv(value, &num_whitelite_fs);
++            }
++          g_variant_unref(value);
++        }
++
++      if (client)
++        {
++          g_object_unref(client);
++        }
++      read_whitelist = TRUE;
++    }
++};
++
+ /* this is not a very efficient implementation but it's very rarely
+  * called so no real point in optimizing it...
+  */
+ static gboolean
+ is_allowed_filesystem (const gchar *fstype)
+ {
+-  return is_well_known_filesystem (fstype) ||
++  gboolean allowed = FALSE;
++  gsize i = 0;
++
++  // Builds fs whitelist only once.
++  build_filesystem_whitelist();
++
++  allowed = (num_whitelite_fs == 0);
++
++  for (i = 0; i < num_whitelite_fs; ++i)
++    {
++      if (g_strcmp0 (whitelisted_filesystems[i], fstype) == 0)
++        {
++          allowed = TRUE;
++          break;
++        }
++    }
++
++  return allowed && (is_well_known_filesystem (fstype) ||
+     is_in_filesystem_file ("/proc/filesystems", fstype) ||
+-    is_in_filesystem_file ("/etc/filesystems", fstype);
++    is_in_filesystem_file ("/etc/filesystems", fstype));
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+@@ -732,6 +780,19 @@ calculate_fs_type (UDisksBlock  *block,
+  out:
+   g_assert (fs_type_to_use == NULL || g_utf8_validate (fs_type_to_use, -1, NULL));
+ 
++  // If we have whitelist in use test that fs_type_to_use is part of allowed types.
++  if ((*error == NULL) && !is_allowed_filesystem (fs_type_to_use))
++    {
++      g_set_error (error,
++                   UDISKS_ERROR,
++                   UDISKS_ERROR_OPTION_NOT_PERMITTED,
++                   "Requested filesystem type `%s' is neither well-known nor "
++                   "in /proc/filesystems nor in /etc/filesystems",
++                   fs_type_to_use);
++      g_free(fs_type_to_use);
++      fs_type_to_use = NULL;
++    }
++
+   return fs_type_to_use;
+ }
+ 
+-- 
+2.20.1
+
