@@ -14,6 +14,8 @@ Group:   System Environment/Libraries
 URL:     https://github.com/storaged-project/udisks
 Source0: %{name}-%{version}.tar.bz2
 Source1: udisks2-symlink-mount-path
+Source2: udisks2-fs-mount-whitelist.txt
+
 Patch1: 0001-Disable-libblockdev-mdraid-and-part-support-from-sou.patch
 Patch2: 0002-Drop-smartata-dependencies.patch
 Patch3: 0003-Loosen-up-polkit-policies-to-work-from-another-seat.patch
@@ -150,6 +152,9 @@ chrpath --delete %{buildroot}/%{_libexecdir}/udisks2/udisksd
 mkdir -p %{buildroot}/%{_oneshotdir}/
 install -m 0755 %{SOURCE1} %{buildroot}/%{_oneshotdir}
 
+mkdir -p %{buildroot}/%{_sysconfdir}/dconf/db/vendor.d/locks/
+install -m 0644 %{SOURCE2} %{buildroot}/%{_sysconfdir}/dconf/db/vendor.d/locks/
+
 mkdir -p %{buildroot}/%{_unitdir}/graphical.target.wants
 ln -s ../udisks2.service %{buildroot}/%{_unitdir}/graphical.target.wants/udisks2.service
 
@@ -179,6 +184,7 @@ fi
 %{_sysconfdir}/udisks2/udisks2.conf
 
 %{_sysconfdir}/dbus-1/system.d/org.freedesktop.UDisks2.conf
+%{_sysconfdir}/dconf/db/vendor.d/locks/*
 %{_datadir}/bash-completion/completions/udisksctl
 %{_unitdir}/udisks2.service
 %{_unitdir}/graphical.target.wants/udisks2.service
