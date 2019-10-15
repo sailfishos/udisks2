@@ -10,8 +10,7 @@ if [ -L $OLD_MOUNT_PATH ]; then
   exit 0
 fi
 
-DEF_UID=$(grep "^UID_MIN" /etc/login.defs |  tr -s " " | cut -d " " -f2)
-DEVICEUSER=$(getent passwd $DEF_UID | sed 's/:.*//')
+DEVICEUSER=$(loginctl list-sessions | grep seat0 | tr -s " " | cut -d " " -f 4)
 for path in ${OLD_MOUNT_PATH}/*
 do
   rmdir ${path}

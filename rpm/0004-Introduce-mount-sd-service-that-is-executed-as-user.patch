@@ -1,15 +1,17 @@
-From aa7d4e7e5397fd3fe527f66bd793d3716fa13f8c Mon Sep 17 00:00:00 2001
-From: Raine Makelainen <raine.makelainen@jolla.com>
-Date: Tue, 6 Feb 2018 14:08:59 +0200
-Subject: [PATCH 04/10] Introduce mount-sd service that is executed as nemo
+From ecd5785222888df160f5b552e45c9c1a7f76f9b9 Mon Sep 17 00:00:00 2001
+From: Marko Kenttala <marko.kenttala@jolla.com>
+Date: Tue, 15 Oct 2019 17:57:19 +0300
+Subject: [PATCH] Introduce mount-sd service that is executed as user
 
-Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
  data/80-udisks2.rules  |  3 +++
  data/Makefile.am       |  2 +-
- data/mount-sd@.service | 12 ++++++++++++
- 3 files changed, 16 insertions(+), 1 deletion(-)
+ data/mount-sd@.service | 11 +++++++++++
+ tools/Makefile.am      |  3 +++
+ tools/udisksctl-user   |  4 ++++
+ 5 files changed, 22 insertions(+), 1 deletion(-)
  create mode 100644 data/mount-sd@.service
+ create mode 100644 tools/udisksctl-user
 
 diff --git a/data/80-udisks2.rules b/data/80-udisks2.rules
 index a64f1cb3..e3eb74e5 100644
@@ -40,22 +42,45 @@ index b38928c8..85a231a0 100644
  systemdservicedir       = $(systemdsystemunitdir)
 diff --git a/data/mount-sd@.service b/data/mount-sd@.service
 new file mode 100644
-index 00000000..c44deebd
+index 00000000..c1aa7de3
 --- /dev/null
 +++ b/data/mount-sd@.service
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,11 @@
 +[Unit]
 +Description=Handle udisks sd mount
-+After=dev-%i.device
++After=dev-%i.device start-user-session.service
 +BindsTo=dev-%i.device
 +Conflicts=rescue.target actdead.target factory-test.target
 +
 +[Service]
-+User=nemo
 +Type=oneshot
 +RemainAfterExit=yes
-+ExecStart=/usr/bin/udisksctl mount -b /dev/%i
-+ExecStop=-/usr/bin/udisksctl unmount -b /dev/%i
++ExecStart=/usr/bin/udisksctl-user mount -b /dev/%i
++ExecStop=-/usr/bin/udisksctl-user unmount -b /dev/%i
+diff --git a/tools/Makefile.am b/tools/Makefile.am
+index 2118e6db..ee8fd06f 100644
+--- a/tools/Makefile.am
++++ b/tools/Makefile.am
+@@ -36,6 +36,9 @@ udisksctl_LDADD =                                                              \
+ 	$(top_builddir)/udisks/libudisks2.la                                   \
+ 	$(NULL)
+ 
++extradir = $(bindir)
++extra_DATA = udisksctl-user
++
+ # ------------------------------------------------------------------------------
+ 
+ sbin_PROGRAMS = umount.udisks2
+diff --git a/tools/udisksctl-user b/tools/udisksctl-user
+new file mode 100644
+index 00000000..04a745d2
+--- /dev/null
++++ b/tools/udisksctl-user
+@@ -0,0 +1,4 @@
++#!/bin/sh
++ARGS=$@
++DEVICEUSER=$(loginctl list-sessions | grep seat0 | tr -s " " | cut -d " " -f 4)
++/bin/su -l $DEVICEUSER -c "/usr/bin/udisksctl $ARGS"
 -- 
-2.17.2
+2.17.1
 
