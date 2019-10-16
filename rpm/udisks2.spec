@@ -19,7 +19,7 @@ Source2: udisks2-fs-mount-whitelist.txt
 Patch1: 0001-Disable-libblockdev-mdraid-and-part-support-from-sou.patch
 Patch2: 0002-Drop-smartata-dependencies.patch
 Patch3: 0003-Loosen-up-polkit-policies-to-work-from-another-seat.patch
-Patch4: 0004-Introduce-mount-sd-service-that-is-executed-as-nemo.patch
+Patch4: 0004-Introduce-mount-sd-service-that-is-executed-as-user.patch
 Patch5: 0005-Add-udev-rule-for-the-sda-drives.patch
 Patch6: 0006-Disable-zram-rule-for-now.patch
 Patch7: 0007-Create-mount-path-with-755-rights.patch
@@ -158,6 +158,8 @@ install -m 0644 %{SOURCE2} %{buildroot}/%{_sysconfdir}/dconf/db/vendor.d/locks/
 mkdir -p %{buildroot}/%{_unitdir}/graphical.target.wants
 ln -s ../udisks2.service %{buildroot}/%{_unitdir}/graphical.target.wants/udisks2.service
 
+chmod +x %{buildroot}/%{_bindir}/udisksctl-user
+
 %find_lang udisks2
 
 %post -n %{name}
@@ -197,6 +199,7 @@ fi
 %{_libexecdir}/udisks2/udisksd
 
 %{_bindir}/udisksctl
+%{_bindir}/udisksctl-user
 
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.policy
 %{_datadir}/dbus-1/system-services/org.freedesktop.UDisks2.service
