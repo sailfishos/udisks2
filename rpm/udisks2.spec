@@ -27,6 +27,7 @@ Patch8: 0008-Make-it-possible-to-encrypt-mmcblk-format-with-encry.patch
 Patch9: 0009-Reduce-reserved-blocks-percentage-to-zero-for-ext2-e.patch
 Patch10: 0010-Allow-rescan-for-inactive.patch
 Patch11: 0011-Allow-whitelisting-filesystems-that-can-be-mounted.patch
+Patch12: 0012-Add-option-to-set-group-permissions.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
@@ -110,19 +111,7 @@ This package contains the development files for the library lib%{name}, a
 dynamic library, which provides access to the udisksd daemon.
 
 %prep
-%setup -q -n %{name}-%{version}/%{name}
-
-%patch1 -p1 -b .disable-mdraid_and_part
-%patch2 -p1 -b .drop-smartata
-%patch3 -p1 -b .loosen-up-rights
-%patch4 -p1 -b .mount-sd-service
-%patch5 -p1 -b .udev-rules-for-sda
-%patch6 -p1 -b .udev-disable-zram
-%patch7 -p1 -b .mount-path-rights
-%patch8 -p1 -b .mmcblk-encryption
-%patch9 -p1 -b .mkfs-reserved-blocks-percentage
-%patch10 -p1 -b .allow-rescan
-%patch11 -p1 -b .fs-whitelist
+%autosetup -p1 -n %{name}-%{version}/%{name}
 
 %build
 # Disable gtk-doc

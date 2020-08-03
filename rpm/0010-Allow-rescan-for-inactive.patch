@@ -1,7 +1,7 @@
 From 4c2e802eb6afa9040dba04c175e0724d7ae00ff3 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Wed, 21 Nov 2018 17:04:27 +0200
-Subject: [PATCH 10/10] Allow rescan for inactive
+Subject: [PATCH] Allow rescan for inactive
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---

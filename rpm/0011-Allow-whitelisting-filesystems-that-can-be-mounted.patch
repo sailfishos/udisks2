@@ -1,7 +1,7 @@
 From 44c58573ec01df21716f1c0b5db94a51ea7caf4b Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Fri, 15 Feb 2019 15:15:48 +0200
-Subject: [PATCH 11/11] Allow whitelisting filesystems that can be mounted
+Subject: [PATCH] Allow whitelisting filesystems that can be mounted
 
 If whitelist is empty when 'well-know', '/proc/filesystems/', and
 '/etc/filesystems' are used like before.
