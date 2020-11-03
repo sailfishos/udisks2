@@ -1,0 +1,24 @@
+From c6aa264dbf46c5f8aabb63bd90ddf41a409039a2 Mon Sep 17 00:00:00 2001
+From: Dmitry Gerasimov <d.gerasimov@omprussia.ru>
+Date: Tue, 3 Nov 2020 17:17:46 +0300
+Subject: [PATCH] Pass extra mount options to mount-sd service
+
+---
+ data/mount-sd@.service | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/data/mount-sd@.service b/data/mount-sd@.service
+index c1aa7de3..22433391 100644
+--- a/data/mount-sd@.service
++++ b/data/mount-sd@.service
+@@ -7,5 +7,6 @@ Conflicts=rescue.target actdead.target factory-test.target
+ [Service]
+ Type=oneshot
+ RemainAfterExit=yes
+-ExecStart=/usr/bin/udisksctl-user mount -b /dev/%i
++EnvironmentFile=-/var/lib/environment/udisks2/*.conf
++ExecStart=/usr/bin/udisksctl-user mount $UDISKS2_MOUNT_OPTIONS -b /dev/%i
+ ExecStop=-/usr/bin/udisksctl-user unmount -b /dev/%i
+-- 
+2.25.1
+

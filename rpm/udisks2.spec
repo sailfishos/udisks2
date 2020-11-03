@@ -28,6 +28,7 @@ Patch9: 0009-Reduce-reserved-blocks-percentage-to-zero-for-ext2-e.patch
 Patch10: 0010-Allow-rescan-for-inactive.patch
 Patch11: 0011-Allow-whitelisting-filesystems-that-can-be-mounted.patch
 Patch12: 0012-Add-option-to-set-group-permissions.patch
+Patch13: 0013-Pass-extra-mount-options-to-mount-sd-service.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
