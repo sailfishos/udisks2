@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ "$MIC_RUN" != "" ]; then
+	echo "udisks2-symlink-mount-path - returning FAIL to postpone oneshot to first boot"
+	exit 1
+fi
+
 OLD_MOUNT_PATH=/media/sdcard
 
 # 1) Test if symlink already exist
