@@ -21,6 +21,5 @@ do
   rmdir ${path}
 done
 
-rmdir ${OLD_MOUNT_PATH}
-ln -s /run/media/${DEVICEUSER} ${OLD_MOUNT_PATH}
+rmdir ${OLD_MOUNT_PATH} && ln -s /run/media/${DEVICEUSER} ${OLD_MOUNT_PATH}
 exit $?
