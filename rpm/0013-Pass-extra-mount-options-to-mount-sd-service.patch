@@ -11,14 +11,14 @@ diff --git a/data/mount-sd@.service b/data/mount-sd@.service
 index c1aa7de3..22433391 100644
 --- a/data/mount-sd@.service
 +++ b/data/mount-sd@.service
-@@ -7,5 +7,6 @@ Conflicts=rescue.target actdead.target factory-test.target
+@@ -8,5 +8,6 @@ Conflicts=rescue.target actdead.target factory-test.target
  [Service]
  Type=oneshot
  RemainAfterExit=yes
 -ExecStart=/usr/bin/udisksctl-user mount -b /dev/%i
 +EnvironmentFile=-/var/lib/environment/udisks2/*.conf
 +ExecStart=/usr/bin/udisksctl-user mount $UDISKS2_MOUNT_OPTIONS -b /dev/%i
- ExecStop=-/usr/bin/udisksctl-user unmount -b /dev/%i
+ ExecStop=/usr/bin/udisksctl unmount -b /dev/%i
 -- 
 2.25.1
 
