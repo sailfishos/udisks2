@@ -45,18 +45,19 @@ new file mode 100644
 index 00000000..c1aa7de3
 --- /dev/null
 +++ b/data/mount-sd@.service
-@@ -0,0 +1,11 @@
+@@ -0,0 +1,12 @@
 +[Unit]
 +Description=Handle udisks sd mount
-+After=dev-%i.device start-user-session.service
-+BindsTo=dev-%i.device
++After=udisks2.service dev-%i.device start-user-session.service
++Requisite=dev-%i.device
++Requires=udisks2.service
 +Conflicts=rescue.target actdead.target factory-test.target
 +
 +[Service]
 +Type=oneshot
 +RemainAfterExit=yes
 +ExecStart=/usr/bin/udisksctl-user mount -b /dev/%i
-+ExecStop=-/usr/bin/udisksctl-user unmount -b /dev/%i
++ExecStop=/usr/bin/udisksctl unmount -b /dev/%i
 diff --git a/tools/Makefile.am b/tools/Makefile.am
 index 2118e6db..ee8fd06f 100644
 --- a/tools/Makefile.am
