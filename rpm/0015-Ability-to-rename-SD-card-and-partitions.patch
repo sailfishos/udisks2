@@ -1,0 +1,28 @@
+diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
+index d97528d4..da66623c 100644
+--- a/data/org.freedesktop.UDisks2.policy.in
++++ b/data/org.freedesktop.UDisks2.policy.in
+@@ -49,9 +49,9 @@
+     <_description>Mount/unmount filesystems defined in the fstab file with the x-udisks-auth option</_description>
+     <_message>Authentication is required to mount/unmount the filesystem</_message>
+     <defaults>
+-      <allow_any>auth_admin</allow_any>
+-      <allow_inactive>auth_admin</allow_inactive>
+-      <allow_active>auth_admin_keep</allow_active>
++      <allow_any>yes</allow_any>
++      <allow_inactive>yes</allow_inactive>
++      <allow_active>yes</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -306,8 +306,8 @@
+     <_description>Modify a device</_description>
+     <_message>Authentication is required to modify a device</_message>
+     <defaults>
+-      <allow_any>auth_admin</allow_any>
+-      <allow_inactive>auth_admin</allow_inactive>
++      <allow_any>yes</allow_any>
++      <allow_inactive>yes</allow_inactive>
+       <allow_active>yes</allow_active>
+     </defaults>
+   </action>

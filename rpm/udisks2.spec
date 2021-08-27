@@ -30,6 +30,7 @@ Patch11: 0011-Allow-whitelisting-filesystems-that-can-be-mounted.patch
 Patch12: 0012-Add-option-to-set-group-permissions.patch
 Patch13: 0013-Pass-extra-mount-options-to-mount-sd-service.patch
 Patch14: 0014-Always-mount-filesystems-using-the-UUID-instead-of-l.patch
+Patch15: 0015-Ability-to-rename-SD-card-and-partitions.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
