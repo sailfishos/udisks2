@@ -1,0 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Bj=C3=B6rn=20Bidar?= <bjorn.bidar@jolla.com>
+Date: Tue, 9 Nov 2021 14:13:14 +0200
+Subject: [PATCH] Add workaround in case gtk-doc isn't installed
+
+---
+ autogen.sh | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/autogen.sh b/autogen.sh
+index 008982bf..8880c9d3 100755
+--- a/autogen.sh
++++ b/autogen.sh
+@@ -15,13 +15,26 @@ cd "$srcdir"
+ 
+ PKG_NAME=$(autoconf --trace 'AC_INIT:$1' configure.ac)
+ 
+-gtkdocize --copy || exit 1
++enable_gtk_doc=--enable-gtk-doc
++gtkdocize || {
++    echo "No gtk-doc support found. You can't build the docs."
++    # rm because gtk-doc.make might be a link to a protected file
++    rm -f gtk-doc.make
++    # Those need to be defined because the upstream Makefile boilerplate
++    # (doc/reference/Makefile.am) relies on them.
++    cat > gtk-doc.make <<EOF
++EXTRA_DIST =
++CLEANFILES =
++EOF
++    enable_gtk_doc=
++}
++
+ autoreconf --verbose --force --install || exit 1
+ 
+ cd "$olddir"
+ 
+ if [ "$NOCONFIGURE" = "" ]; then
+-        $srcdir/configure --enable-gtk-doc "$@" || exit 1
++        $srcdir/configure $enable_gtk_doc "$@" || exit 1
+ 
+         if [ "$1" = "--help" ]; then
+                 exit 0
+-- 
+2.33.1
+

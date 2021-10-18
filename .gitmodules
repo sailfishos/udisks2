@@ -1,3 +1,3 @@
 [submodule "udisks2"]
 	path = udisks2
-	url = https://github.com/storaged-project/udisks.git
+	url = https://github.com/sailfishos-mirror/udisks.git
