@@ -1,7 +1,7 @@
-From 691a56727565cc5425df86d995cd740e89cc3aa6 Mon Sep 17 00:00:00 2001
+From 4273858e5bb8832c8872ddd7f019149e675d58b0 Mon Sep 17 00:00:00 2001
 From: Franz-Josef Haider <franz.haider@jolla.com>
 Date: Mon, 15 Mar 2021 13:29:59 +0000
-Subject: [PATCH 14/14] Always mount filesystems using the UUID instead of
+Subject: [PATCH 13/13] Always mount filesystems using the UUID instead of
  label.
 
 ---
@@ -9,10 +9,10 @@ Subject: [PATCH 14/14] Always mount filesystems using the UUID instead of
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index 9ceec385..453bd528 100644
+index 60cc254c..81c370f5 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
-@@ -1086,6 +1086,9 @@ calculate_mount_point (UDisksDaemon  *daemon,
+@@ -705,6 +705,9 @@ calculate_mount_point (UDisksDaemon  *daemon,
     *
     *       See http://en.wikipedia.org/wiki/UTF-8 for details.
     */
@@ -22,7 +22,7 @@ index 9ceec385..453bd528 100644
    if (label != NULL && strlen (label) > 0)
      {
        str = g_string_new (NULL);
-@@ -1102,7 +1105,9 @@ calculate_mount_point (UDisksDaemon  *daemon,
+@@ -721,7 +724,9 @@ calculate_mount_point (UDisksDaemon  *daemon,
        mount_point = g_string_free (str, FALSE);
        g_free (s);
      }
@@ -34,5 +34,5 @@ index 9ceec385..453bd528 100644
        str = g_string_new (NULL);
        g_string_append_printf (str, "%s/", mount_dir);
 -- 
-2.26.2
+2.25.1
 

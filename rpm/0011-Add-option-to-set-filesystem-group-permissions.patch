@@ -1,7 +1,7 @@
-From 9c4ee1390505b2e3cc205df7e2ac8e34811e6aa1 Mon Sep 17 00:00:00 2001
+From 0f071eb873ea5e99f8d5582558384d2ff1733e61 Mon Sep 17 00:00:00 2001
 From: Mike Salmela <mike.salmela@jolla.com>
 Date: Fri, 31 Jul 2020 11:19:27 +0300
-Subject: [PATCH] Add option to set filesystem group permissions
+Subject: [PATCH 11/13] Add option to set filesystem group permissions
 
 Added option set-group-permissions to the Format() method.
 If the take-ownership option is set, the filesystem permissions will be drwx------ by default.
@@ -14,10 +14,10 @@ When also setting the set-group-permissions option true, the permission is set t
  4 files changed, 18 insertions(+), 4 deletions(-)
 
 diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
-index fd82d0e4..27d85f7b 100644
+index a9aa27cf..a3a555df 100644
 --- a/src/udiskslinuxblock.c
 +++ b/src/udiskslinuxblock.c
-@@ -2897,6 +2897,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+@@ -2963,6 +2963,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
    uid_t caller_uid;
    gid_t caller_gid;
    gboolean take_ownership = FALSE;
@@ -25,15 +25,15 @@ index fd82d0e4..27d85f7b 100644
    GString *encrypt_passphrase = NULL;
    gchar *encrypt_type = NULL;
    gchar *erase_type = NULL;
-@@ -2928,6 +2929,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
-   error_message = NULL;
+@@ -3001,6 +3002,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+   udisks_state_check_block (state, udisks_linux_block_object_get_device_number (UDISKS_LINUX_BLOCK_OBJECT (object)));
  
    g_variant_lookup (options, "take-ownership", "b", &take_ownership);
 +  g_variant_lookup (options, "set-group-permissions", "b", &set_group_permissions);
    udisks_variant_lookup_binary (options, "encrypt.passphrase", &encrypt_passphrase);
    g_variant_lookup (options, "encrypt.type", "s", &encrypt_type);
    g_variant_lookup (options, "erase", "s", &erase_type);
-@@ -3350,7 +3352,8 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+@@ -3466,7 +3468,8 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
    if (take_ownership && fs_info->supports_owners)
      {
        if (!take_filesystem_ownership (udisks_block_get_device (block_to_mkfs),
@@ -44,10 +44,10 @@ index fd82d0e4..27d85f7b 100644
            g_prefix_error (&error,
                            "Failed to take ownership of newly created filesystem: ");
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index 8d1bff42..ac663d49 100644
+index 833f9b1c..60cc254c 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
-@@ -2609,10 +2609,12 @@ handle_take_ownership (UDisksFilesystem      *filesystem,
+@@ -2307,10 +2307,12 @@ handle_take_ownership (UDisksFilesystem      *filesystem,
    UDisksBaseJob *job = NULL;
    GError *error = NULL;
    gboolean recursive = FALSE;
@@ -60,7 +60,7 @@ index 8d1bff42..ac663d49 100644
  
    /* only allow a single call at a time */
    g_mutex_lock (&UDISKS_LINUX_FILESYSTEM (filesystem)->lock);
-@@ -2697,6 +2699,7 @@ handle_take_ownership (UDisksFilesystem      *filesystem,
+@@ -2403,6 +2405,7 @@ handle_take_ownership (UDisksFilesystem      *filesystem,
                                     probed_fs_type,
                                     caller_uid, caller_gid,
                                     recursive,
@@ -69,18 +69,18 @@ index 8d1bff42..ac663d49 100644
      {
        g_dbus_method_invocation_return_error (invocation,
 diff --git a/src/udiskslinuxfilesystemhelpers.c b/src/udiskslinuxfilesystemhelpers.c
-index 11ce27b4..c27f5fc0 100644
+index 7c5fc037..c5d0071a 100644
 --- a/src/udiskslinuxfilesystemhelpers.c
 +++ b/src/udiskslinuxfilesystemhelpers.c
-@@ -81,6 +81,7 @@ gboolean take_filesystem_ownership (const gchar *device,
-                                     uid_t caller_uid,
-                                     gid_t caller_gid,
-                                     gboolean recursive,
-+                                    gboolean set_group_permissions,
-                                     GError **error)
+@@ -119,6 +119,7 @@ take_filesystem_ownership (const gchar  *device,
+                            uid_t         caller_uid,
+                            gid_t         caller_gid,
+                            gboolean      recursive,
++                           gboolean      set_group_permissions,
+                            GError      **error)
  
  {
-@@ -89,6 +90,7 @@ gboolean take_filesystem_ownership (const gchar *device,
+@@ -126,6 +127,7 @@ take_filesystem_ownership (const gchar  *device,
    GError *local_error = NULL;
    gboolean unmount = FALSE;
    gboolean success = TRUE;
@@ -88,9 +88,9 @@ index 11ce27b4..c27f5fc0 100644
  
    mountpoint = bd_fs_get_mountpoint (device, &local_error);
    if (mountpoint == NULL)
-@@ -154,11 +156,16 @@ gboolean take_filesystem_ownership (const gchar *device,
-         }
-     }
+@@ -173,11 +175,16 @@ take_filesystem_ownership (const gchar  *device,
+   if (! success)
+     goto out;
  
 -  if (chmod (mountpoint, 0700) != 0)
 +  if (set_group_permissions)
@@ -109,7 +109,7 @@ index 11ce27b4..c27f5fc0 100644
        goto out;
      }
 diff --git a/src/udiskslinuxfilesystemhelpers.h b/src/udiskslinuxfilesystemhelpers.h
-index 02e827c9..17f73bf7 100644
+index a6ed271d..98761720 100644
 --- a/src/udiskslinuxfilesystemhelpers.h
 +++ b/src/udiskslinuxfilesystemhelpers.h
 @@ -36,6 +36,7 @@ gboolean take_filesystem_ownership (const gchar *device,
@@ -121,5 +121,5 @@ index 02e827c9..17f73bf7 100644
  
  G_END_DECLS
 -- 
-2.27.0
+2.25.1
 

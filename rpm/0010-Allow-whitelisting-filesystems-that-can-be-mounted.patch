@@ -1,7 +1,7 @@
-From 44c58573ec01df21716f1c0b5db94a51ea7caf4b Mon Sep 17 00:00:00 2001
+From b691d9d347683bb134337846b8d22436afed25ba Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Fri, 15 Feb 2019 15:15:48 +0200
-Subject: [PATCH] Allow whitelisting filesystems that can be mounted
+Subject: [PATCH 10/13] Allow whitelisting filesystems that can be mounted
 
 If whitelist is empty when 'well-know', '/proc/filesystems/', and
 '/etc/filesystems' are used like before.
@@ -14,41 +14,41 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  3 files changed, 70 insertions(+), 2 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 6a482e4c..40e51633 100644
+index 47e50036..d289f1bf 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -161,6 +161,10 @@ PKG_CHECK_MODULES(POLKIT_AGENT_1, [polkit-agent-1 >= 0.102])
- AC_SUBST(POLKIT_AGENT_1_CFLAGS)
- AC_SUBST(POLKIT_AGENT_1_LIBS)
+@@ -168,6 +168,10 @@ if test "x$enable_daemon" = "xyes"; then
+   AC_SUBST(BLOCKDEV_CFLAGS)
+   AC_SUBST(BLOCKDEV_LIBS)
  
-+PKG_CHECK_MODULES(DCONF, [dconf >= 0.28.0])
-+AC_SUBST(DCONF_CFLAGS)
-+AC_SUBST(DCONF_LIBS)
++  PKG_CHECK_MODULES(DCONF, [dconf >= 0.28.0])
++  AC_SUBST(DCONF_CFLAGS)
++  AC_SUBST(DCONF_LIBS)
 +
- PKG_CHECK_MODULES(LIBMOUNT, [mount >= 2.30],
-                   [have_libmount=yes],
-                   [have_libmount=no])
+   PKG_CHECK_MODULES(LIBMOUNT, [mount >= 2.18])
+   AC_SUBST(LIBMOUNT_CFLAGS)
+   AC_SUBST(LIBMOUNT_LIBS)
 diff --git a/src/Makefile.am b/src/Makefile.am
-index 49c7e04c..3f90270b 100644
+index e87a94da..7b3b26c7 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
-@@ -25,6 +25,7 @@ CPPFLAGS =                                                                     \
+@@ -27,6 +27,7 @@ CPPFLAGS =                                                                     \
  	$(GIO_CFLAGS)                                                          \
  	$(GMODULE_CFLAGS)                                                      \
- 	$(BLOCKDEV_CFLAGS)													   \
+ 	$(BLOCKDEV_CFLAGS)                                                     \
 +	$(DCONF_CFLAGS)                                                        \
  	$(WARN_CFLAGS)                                                         \
  	$(NULL)
  
-@@ -130,6 +131,7 @@ libudisks_daemon_la_LIBADD =                                                   \
+@@ -146,6 +147,7 @@ libudisks_daemon_la_LIBADD =                                                   \
  	$(LIBELOGIND_LIBS)                                                     \
  	$(PART_LDFLAGS)                                                        \
- 	$(SWAP_LIBS)                                                        \
+ 	$(SWAP_LIBS)                                                           \
 +	$(DCONF_LIBS)                                                          \
  	$(top_builddir)/udisks/libudisks2.la                                   \
  	$(NULL)
  
-@@ -151,6 +153,7 @@ udisksd_LDADD =                                                                \
+@@ -167,6 +169,7 @@ udisksd_LDADD =                                                                \
  	$(GIO_LIBS)                                                            \
  	$(GMODULE_LIBS)                                                        \
  	$(BLOCKDEV_LIBS)                                                       \
@@ -57,10 +57,10 @@ index 49c7e04c..3f90270b 100644
  	$(NULL)
  
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index 97f1d1a4..d42deaed 100644
+index 64057c72..833f9b1c 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
-@@ -39,6 +39,8 @@
+@@ -41,6 +41,8 @@
  
  #include <glib/gstdio.h>
  
@@ -69,7 +69,7 @@ index 97f1d1a4..d42deaed 100644
  #include "udiskslogging.h"
  #include "udiskslinuxfilesystem.h"
  #include "udiskslinuxfilesystemhelpers.h"
-@@ -306,15 +308,61 @@ is_well_known_filesystem (const gchar *fstype)
+@@ -369,15 +371,61 @@ is_well_known_filesystem (const gchar *fstype)
    return ret;
  }
  
@@ -133,7 +133,7 @@ index 97f1d1a4..d42deaed 100644
  }
  
  /* ---------------------------------------------------------------------------------------------------- */
-@@ -732,6 +780,19 @@ calculate_fs_type (UDisksBlock  *block,
+@@ -456,6 +504,19 @@ calculate_fs_type (UDisksBlock  *block,
   out:
    g_assert (fs_type_to_use == NULL || g_utf8_validate (fs_type_to_use, -1, NULL));
  
@@ -154,5 +154,5 @@ index 97f1d1a4..d42deaed 100644
  }
  
 -- 
-2.20.1
+2.25.1
 

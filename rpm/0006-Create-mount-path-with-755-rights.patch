@@ -1,7 +1,7 @@
-From 9ce374eb82c4cebc0f24d2f4746ebbf9e78df12f Mon Sep 17 00:00:00 2001
+From ca9d6454dd6b4c6dcd81398d4b76170a3d5679ed Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Wed, 18 Apr 2018 18:00:00 +0300
-Subject: [PATCH] Create mount path with 755 rights
+Subject: [PATCH 06/13] Create mount path with 755 rights
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -9,10 +9,10 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index 8d1bff42..97f1d1a4 100644
+index f7c99757..64057c72 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
-@@ -984,7 +984,7 @@ calculate_mount_point (UDisksDaemon  *daemon,
+@@ -602,7 +602,7 @@ calculate_mount_point (UDisksDaemon  *daemon,
              }
            /* Then create the per-user MOUNT_BASE/$USER */
  #ifdef HAVE_ACL
@@ -22,5 +22,5 @@ index 8d1bff42..97f1d1a4 100644
            if (g_mkdir (mount_dir, 0750) != 0 && errno != EEXIST)
  #endif
 -- 
-2.17.2
+2.25.1
 

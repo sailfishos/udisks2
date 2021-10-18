@@ -1,16 +1,15 @@
-%global glib2_version                   2.36
+%global glib2_version                   2.50
 %global gobject_introspection_version   1.30.0
 %global polkit_version                  0.102
 %global systemd_version                 208
 %global dbus_version                    1.4.0
-%global libblockdev_version             2.14
+%global libblockdev_version             2.25
 
 Name:    udisks2
 Summary: Disk Manager
-Version: 2.8.1
+Version: 2.9.4
 Release: 1
 License: GPLv2+
-Group:   System Environment/Libraries
 URL:     https://github.com/storaged-project/udisks
 Source0: %{name}-%{version}.tar.bz2
 Source1: udisks2-symlink-mount-path
@@ -79,6 +78,8 @@ Requires: e2fsprogs
 # For ejecting removable disks
 #Requires: eject
 Requires: libmount >= 2.30
+# The actual polkit agent
+Requires: polkit >= %{polkit_version}
 
 Requires: lib%{name} = %{version}-%{release}
 
@@ -93,7 +94,6 @@ manipulate disks, storage devices and technologies.
 
 %package -n lib%{name}
 Summary: Dynamic library to access the udisksd daemon
-Group: System Environment/Libraries
 License: LGPLv2+
 
 %description -n lib%{name}
@@ -102,7 +102,6 @@ access to the udisksd daemon.
 
 %package -n lib%{name}-devel
 Summary: Development files for lib%{name}
-Group: Development/Libraries
 Requires: lib%{name} = %{version}-%{release}
 License: LGPLv2+
 
@@ -127,10 +126,10 @@ autoreconf -vfi -Wno-portability
     --sysconfdir=/etc \
     --enable-man=no \
     --prefix=%{_prefix}
-make %{?_smp_mflags}
+%make_build
 
 %install
-make install DESTDIR=%{buildroot}
+%make_install
 
 find %{buildroot} -name \*.la -o -name \*.a | xargs rm
 
