@@ -65,9 +65,7 @@ Requires: libblockdev-swap   >= %{libblockdev_version}
 Requires: libblockdev-fs     >= %{libblockdev_version}
 Requires: libblockdev-crypto >= %{libblockdev_version}
 
-# Needed for the systemd-related macros used in this file
 %{?systemd_requires}
-BuildRequires: systemd
 
 # Needed to pull in the system bus daemon
 Requires: dbus >= %{dbus_version}
