@@ -166,7 +166,7 @@ fi
 %postun -n lib%{name} -p /sbin/ldconfig
 
 %files -f udisks2.lang
-%doc COPYING
+%license COPYING
 
 %dir %{_sysconfdir}/udisks2
 %{_sysconfdir}/udisks2/udisks2.conf
@@ -194,7 +194,7 @@ fi
 %{_libdir}/girepository-1.0/UDisks-2.0.typelib
 
 %files -n lib%{name}-devel
-%doc COPYING NEWS README.md AUTHORS HACKING
+%doc NEWS README.md AUTHORS HACKING
 %{_sysconfdir}/udisks2/mount_options.conf.example
 %{_libdir}/libudisks2.so
 %dir %{_includedir}/udisks2
