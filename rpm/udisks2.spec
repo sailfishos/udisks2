@@ -49,7 +49,6 @@ BuildRequires: intltool
 BuildRequires: libacl-devel
 BuildRequires: chrpath
 BuildRequires: pkgconfig(gudev-1.0) >= %{systemd_version}
-BuildRequires: intltool
 BuildRequires: libblockdev-devel        >= %{libblockdev_version}
 BuildRequires: libblockdev-loop-devel   >= %{libblockdev_version}
 BuildRequires: libblockdev-swap-devel   >= %{libblockdev_version}
