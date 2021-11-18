@@ -1,8 +1,8 @@
-From 2cadb944916c23d290320076f13b420f65cb3a12 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Wed, 21 Nov 2018 17:27:59 +0200
-Subject: [PATCH] Reduce reserved blocks percentage to zero for
- ext2/ext3/ext4 formatting
+Subject: [PATCH] Reduce reserved blocks percentage to zero for ext2/ext3/ext4
+ formatting
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
@@ -10,10 +10,10 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/src/udiskslinuxfsinfo.c b/src/udiskslinuxfsinfo.c
-index d9e9f814..ba0049cd 100644
+index a331cbed..9c0811d1 100644
 --- a/src/udiskslinuxfsinfo.c
 +++ b/src/udiskslinuxfsinfo.c
-@@ -70,7 +70,7 @@ const FSInfo _fs_info[] =
+@@ -73,7 +73,7 @@ const FSInfo _fs_info[] =
        NULL,
        TRUE,  /* supports_online_label_rename */
        TRUE,  /* supports_owners */
@@ -22,7 +22,7 @@ index d9e9f814..ba0049cd 100644
        "mkfs.ext2 -n -F -L $LABEL $OPTIONS $DEVICE",
        "-E nodiscard", /* option_no_discard */
      },
-@@ -80,7 +80,7 @@ const FSInfo _fs_info[] =
+@@ -83,7 +83,7 @@ const FSInfo _fs_info[] =
        NULL,
        TRUE,  /* supports_online_label_rename */
        TRUE,  /* supports_owners */
@@ -31,7 +31,7 @@ index d9e9f814..ba0049cd 100644
        "mkfs.ext3 -n -F -L $LABEL $OPTIONS $DEVICE",
        "-E nodiscard", /* option_no_discard */
      },
-@@ -90,7 +90,7 @@ const FSInfo _fs_info[] =
+@@ -93,7 +93,7 @@ const FSInfo _fs_info[] =
        NULL,
        TRUE,  /* supports_online_label_rename */
        TRUE,  /* supports_owners */
@@ -41,5 +41,5 @@ index d9e9f814..ba0049cd 100644
        "-E nodiscard", /* option_no_discard */
      },
 -- 
-2.17.2
+2.33.1
 

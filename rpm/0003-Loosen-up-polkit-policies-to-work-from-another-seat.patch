@@ -1,4 +1,4 @@
-From 83e732433500be755af56a18488d17dbaf32992b Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Raine Makelainen <raine.makelainen@jolla.com>
 Date: Tue, 6 Feb 2018 14:01:16 +0200
 Subject: [PATCH] Loosen up polkit policies to work from another seat
@@ -9,12 +9,12 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
-index d97528d4..eaf13908 100644
+index 4b02f46f..b79d22b3 100644
 --- a/data/org.freedesktop.UDisks2.policy.in
 +++ b/data/org.freedesktop.UDisks2.policy.in
 @@ -16,8 +16,8 @@
-     <_description>Mount a filesystem</_description>
-     <_message>Authentication is required to mount the filesystem</_message>
+     <description>Mount a filesystem</description>
+     <message>Authentication is required to mount the filesystem</message>
      <defaults>
 -      <allow_any>auth_admin</allow_any>
 -      <allow_inactive>auth_admin</allow_inactive>
@@ -33,8 +33,8 @@ index d97528d4..eaf13908 100644
    </action>
  
 @@ -38,9 +38,9 @@
-     <_description>Mount a filesystem from a device plugged into another seat</_description>
-     <_message>Authentication is required to mount the filesystem</_message>
+     <description>Mount a filesystem from a device plugged into another seat</description>
+     <message>Authentication is required to mount the filesystem</message>
      <defaults>
 -      <allow_any>auth_admin</allow_any>
 -      <allow_inactive>auth_admin</allow_inactive>
@@ -46,8 +46,8 @@ index d97528d4..eaf13908 100644
    </action>
  
 @@ -63,9 +63,9 @@
-     <_description>Unmount a device mounted by another user</_description>
-     <_message>Authentication is required to unmount a filesystem mounted by another user</_message>
+     <description>Unmount a device mounted by another user</description>
+     <message>Authentication is required to unmount a filesystem mounted by another user</message>
      <defaults>
 -      <allow_any>auth_admin</allow_any>
 -      <allow_inactive>auth_admin</allow_inactive>
@@ -68,8 +68,8 @@ index d97528d4..eaf13908 100644
    </action>
  
 @@ -111,9 +111,9 @@
-     <_description>Unlock an encrypted device plugged into another seat</_description>
-     <_message>Authentication is required to unlock an encrypted device</_message>
+     <description>Unlock an encrypted device plugged into another seat</description>
+     <message>Authentication is required to unlock an encrypted device</message>
      <defaults>
 -      <allow_any>auth_admin</allow_any>
 -      <allow_inactive>auth_admin</allow_inactive>
@@ -90,8 +90,8 @@ index d97528d4..eaf13908 100644
    </action>
  
 @@ -328,9 +328,9 @@
-     <_description>Modify a device</_description>
-     <_message>Authentication is required to modify a device plugged into another seat</_message>
+     <description>Modify a device</description>
+     <message>Authentication is required to modify a device plugged into another seat</message>
      <defaults>
 -      <allow_any>auth_admin</allow_any>
 -      <allow_inactive>auth_admin</allow_inactive>
@@ -112,5 +112,5 @@ index d97528d4..eaf13908 100644
    </action>
  
 -- 
-2.17.2
+2.33.1
 
