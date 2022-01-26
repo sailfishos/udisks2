@@ -14,7 +14,7 @@ Subject: [PATCH] Introduce mount-sd service that is executed as user
  create mode 100644 tools/udisksctl-user
 
 diff --git a/data/80-udisks2.rules b/data/80-udisks2.rules
-index 39bfa28b..3635a73f 100644
+index 39bfa28b..64ac2836 100644
 --- a/data/80-udisks2.rules
 +++ b/data/80-udisks2.rules
 @@ -48,6 +48,11 @@ KERNEL=="mmcblk[0-9]*", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", ENV{MMC_TYPE}==
@@ -22,9 +22,9 @@ index 39bfa28b..3635a73f 100644
  # compatibility fallback in case of an unavailable MMC_TYPE attr
  KERNEL=="mmcblk[0-9]*", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", ENV{MMC_TYPE}=="", ENV{ID_DRIVE_FLASH_SD}="1", ENV{ID_DRIVE_MEDIA_FLASH_SD}="1"
 +
-+# Match sda1 to mmcblk1 both of DEVTYPE==disk and SUBSYSTEM=="block"
-+KERNEL=="mmcblk1*|sd[a-z][0-9]", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk",  ENV{ID_DRIVE_FLASH_SD}="1", ENV{ID_DRIVE_MEDIA_FLASH_SD}="1"
-+KERNEL=="mmcblk1*|sd[a-z][0-9]", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", ACTION=="add", MODE="0660", TAG+="systemd", ENV{SYSTEMD_WANTS}="mount-sd@%k.service"
++KERNEL=="mmcblk[0-9]*|sd[a-z][0-9]", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", ENV{ID_DRIVE_THUMB}=="1", ACTION=="add", MODE="0660", TAG+="systemd", ENV{SYSTEMD_WANTS}="mount-sd@%k.service"
++KERNEL=="mmcblk[0-9]*|sd[a-z][0-9]", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", ENV{ID_DRIVE_MEDIA_FLASH_SD}=="1", ACTION=="add", MODE="0660", TAG+="systemd", ENV{SYSTEMD_WANTS}="mount-sd@%k.service"
++KERNEL=="mmcblk[0-9]*|sd[a-z][0-9]", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", ENV{ID_DRIVE_MEDIA_FLASH_SDIO}=="1", ACTION=="add", MODE="0660", TAG+="systemd", ENV{SYSTEMD_WANTS}="mount-sd@%k.service"
 +
  # import ID_SERIAL and related for "mmcblk_boot" devices from its parent
  KERNEL=="mmcblk[0-9]boot[0-9]*", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", IMPORT{parent}="ID_*"
@@ -97,5 +97,5 @@ index 00000000..04a745d2
 +DEVICEUSER=$(loginctl list-sessions | grep seat0 | tr -s " " | cut -d " " -f 4)
 +/bin/su -l $DEVICEUSER -c "/usr/bin/udisksctl $ARGS"
 -- 
-2.33.1
+2.34.1
 
