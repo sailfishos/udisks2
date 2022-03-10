@@ -6,10 +6,10 @@ Subject: [PATCH] Introduce mount-sd service that is executed as user
 ---
  data/80-udisks2.rules     |  5 +++++
  data/Makefile.am          |  7 +++++--
- data/mount-sd@.service.in | 13 +++++++++++++
+ data/mount-sd@.service.in | 14 ++++++++++++++
  tools/Makefile.am         |  3 +++
  tools/udisksctl-user      |  4 ++++
- 5 files changed, 30 insertions(+), 2 deletions(-)
+ 5 files changed, 31 insertions(+), 2 deletions(-)
  create mode 100644 data/mount-sd@.service.in
  create mode 100644 tools/udisksctl-user
 
@@ -30,7 +30,7 @@ index 39bfa28b..64ac2836 100644
  KERNEL=="mmcblk[0-9]boot[0-9]*", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", IMPORT{parent}="ID_*"
  # ditto for memstick
 diff --git a/data/Makefile.am b/data/Makefile.am
-index 758644be..9bce130a 100644
+index 758644be..d640b6ab 100644
 --- a/data/Makefile.am
 +++ b/data/Makefile.am
 @@ -18,14 +18,17 @@ dbusconf_DATA = $(dbusconf_in_files:.conf.in=.conf)
@@ -48,19 +48,20 @@ index 758644be..9bce130a 100644
 -	@sed -e "s|\@udisksdprivdir\@|$(libexecdir)/udisks2|" $< > $@
 +	@sed -e "s|\@udisksdprivdir\@|$(libexecdir)/udisks2|" \
 +             -e "s|\@bindir\@|$(bindir)|" \
-+	     -e "s|\@localstatedir\@|$(localstatedir)|" \
++	     -e "s|\@sharedstatedir\@|$(sharedstatedir)|" \
 +	$@.in > $@
  endif
  
  udevrulesdir = $(udevdir)/rules.d
 diff --git a/data/mount-sd@.service.in b/data/mount-sd@.service.in
 new file mode 100644
-index 00000000..b61f0e4c
+index 00000000..5c90e0ff
 --- /dev/null
 +++ b/data/mount-sd@.service.in
-@@ -0,0 +1,13 @@
+@@ -0,0 +1,14 @@
 +[Unit]
 +Description=Handle udisks sd mount
++BindsTo=dev-%i.device
 +After=udisks2.service dev-%i.device start-user-session.service
 +Requisite=dev-%i.device
 +Requires=udisks2.service
@@ -69,7 +70,7 @@ index 00000000..b61f0e4c
 +[Service]
 +Type=oneshot
 +RemainAfterExit=yes
-+EnvironmentFile=-@localstatedir@/environment/udisks2/*.conf
++EnvironmentFile=-@sharedstatedir@/environment/udisks2/*.conf
 +ExecStart=@bindir@/udisksctl-user mount $UDISKS2_MOUNT_OPTIONS -b /dev/%i
 +ExecStop=@bindir@/udisksctl unmount -b /dev/%i
 diff --git a/tools/Makefile.am b/tools/Makefile.am
