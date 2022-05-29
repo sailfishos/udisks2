@@ -47,7 +47,7 @@ index 758644be..9bce130a 100644
  $(systemdservice_DATA): $(systemdservice_in_files) Makefile
 -	@sed -e "s|\@udisksdprivdir\@|$(libexecdir)/udisks2|" $< > $@
 +	@sed -e "s|\@udisksdprivdir\@|$(libexecdir)/udisks2|" \
-+         -e "s|\@bindir\@|$(bindir)|" \
++            -e "s|\@bindir\@|$(bindir)|" \
 +	     -e "s|\@localstatedir\@|$(localstatedir)|" \
 +	$@.in > $@
  endif
