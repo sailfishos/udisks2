@@ -47,7 +47,7 @@ index 758644be..9bce130a 100644
  $(systemdservice_DATA): $(systemdservice_in_files) Makefile
 -	@sed -e "s|\@udisksdprivdir\@|$(libexecdir)/udisks2|" $< > $@
 +	@sed -e "s|\@udisksdprivdir\@|$(libexecdir)/udisks2|" \
-+             -e "s|\@bindir\@|$(bindir)|" \
++         -e "s|\@bindir\@|$(bindir)|" \
 +	     -e "s|\@localstatedir\@|$(localstatedir)|" \
 +	$@.in > $@
  endif
@@ -93,9 +93,9 @@ index 00000000..04a745d2
 +++ b/tools/udisksctl-user
 @@ -0,0 +1,4 @@
 +#!/bin/sh
-+ARGS=$@
-+DEVICEUSER=$(loginctl list-sessions | grep seat0 | tr -s " " | cut -d " " -f 4)
-+/bin/su -l $DEVICEUSER -c "/usr/bin/udisksctl $ARGS"
++ARGS="$@"
++DEVICEUSER="$(loginctl list-sessions | fgrep seat0 | tr -s ' ' | cut -d ' ' -f 4)"
++/bin/su -l "$DEVICEUSER" -c "/usr/bin/udisksctl $ARGS"
 -- 
 2.34.1
 
