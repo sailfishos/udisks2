@@ -39,6 +39,7 @@ BuildRequires: pkgconfig(systemd) >= %{systemd_version}
 BuildRequires: pkgconfig(openssl)
 BuildRequires: pkgconfig(mount) >= 2.30
 BuildRequires: pkgconfig(dconf) >= 0.28.0
+BuildRequires: pkgconfig(uuid)
 
 BuildRequires: gettext-devel
 BuildRequires: autoconf
