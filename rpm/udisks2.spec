@@ -46,7 +46,6 @@ BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: libxslt
 BuildRequires: libtool
-BuildRequires: intltool
 BuildRequires: libacl-devel
 BuildRequires: chrpath
 BuildRequires: pkgconfig(gudev-1.0) >= %{systemd_version}
@@ -123,7 +122,6 @@ CLEANFILES =
 EOF
 
 glib-gettextize --force --copy
-intltoolize --force --copy --automake
 autoreconf -vfi -Wno-portability
 %configure \
     --sysconfdir=/etc \
