@@ -126,6 +126,7 @@ autoreconf -vfi -Wno-portability
 %configure \
     --sysconfdir=/etc \
     --enable-man=no \
+    --disable-static \
     --prefix=%{_prefix}
 %make_build
 
