@@ -14,40 +14,40 @@ When also setting the set-group-permissions option true, the permission is set t
  4 files changed, 18 insertions(+), 4 deletions(-)
 
 diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
-index 61f904c4..5b9c6964 100644
+index 6285e9e8..38208167 100644
 --- a/src/udiskslinuxblock.c
 +++ b/src/udiskslinuxblock.c
-@@ -2968,6 +2968,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
-   uid_t caller_uid;
+@@ -3399,6 +3399,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
    gid_t caller_gid;
+   /* D-Bus options */
    gboolean take_ownership = FALSE;
 +  gboolean set_group_permissions = FALSE;
    GString *encrypt_passphrase = NULL;
-   gchar *encrypt_type = NULL;
-   gchar *erase_type = NULL;
-@@ -3005,6 +3006,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+   const gchar *encrypt_type = NULL;
+   const gchar *erase_type = NULL;
+@@ -3429,6 +3430,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
    udisks_state_check_block (state, udisks_linux_block_object_get_device_number (UDISKS_LINUX_BLOCK_OBJECT (object)));
  
    g_variant_lookup (options, "take-ownership", "b", &take_ownership);
 +  g_variant_lookup (options, "set-group-permissions", "b", &set_group_permissions);
    udisks_variant_lookup_binary (options, "encrypt.passphrase", &encrypt_passphrase);
-   g_variant_lookup (options, "encrypt.type", "s", &encrypt_type);
-   g_variant_lookup (options, "erase", "s", &erase_type);
-@@ -3469,7 +3471,8 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
-   if (take_ownership && fs_info->supports_owners)
+   g_variant_lookup (options, "encrypt.type", "&s", &encrypt_type);
+   g_variant_lookup (options, "erase", "&s", &erase_type);
+@@ -3731,7 +3733,8 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+       (fs_features->features & BD_FS_FEATURE_OWNERS) == BD_FS_FEATURE_OWNERS)
      {
        if (!take_filesystem_ownership (udisks_block_get_device (block_to_mkfs),
 -                                      type, caller_uid, caller_gid, FALSE, &error))
 +                                      type, caller_uid, caller_gid, FALSE,
 +                                      set_group_permissions, &error))
          {
-           g_prefix_error (&error,
-                           "Failed to take ownership of newly created filesystem: ");
+           g_prefix_error (&error, "Failed to take ownership of the newly created filesystem: ");
+           handle_format_failure (invocation, error);
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index 833f9b1c..60cc254c 100644
+index 970cf3be..02589fa2 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
-@@ -2307,10 +2307,12 @@ handle_take_ownership (UDisksFilesystem      *filesystem,
+@@ -2486,10 +2486,12 @@ handle_take_ownership (UDisksFilesystem      *filesystem,
    UDisksBaseJob *job = NULL;
    GError *error = NULL;
    gboolean recursive = FALSE;
@@ -60,7 +60,7 @@ index 833f9b1c..60cc254c 100644
  
    /* only allow a single call at a time */
    g_mutex_lock (&UDISKS_LINUX_FILESYSTEM (filesystem)->lock);
-@@ -2403,6 +2405,7 @@ handle_take_ownership (UDisksFilesystem      *filesystem,
+@@ -2590,6 +2592,7 @@ handle_take_ownership (UDisksFilesystem      *filesystem,
                                     probed_fs_type,
                                     caller_uid, caller_gid,
                                     recursive,
@@ -120,6 +120,3 @@ index a6ed271d..98761720 100644
                                      GError **error);
  
  G_END_DECLS
--- 
-2.33.1
-

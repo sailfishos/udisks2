@@ -8,29 +8,28 @@ If whitelist is empty when 'well-know', '/proc/filesystems/', and
 
 Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
 ---
- configure.ac                |  5 +++
+ configure.ac                |  4 +++
  src/Makefile.am             |  3 ++
  src/udiskslinuxfilesystem.c | 65 +++++++++++++++++++++++++++++++++++--
- 3 files changed, 71 insertions(+), 2 deletions(-)
+ 3 files changed, 70 insertions(+), 2 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 6e09a1c0..a9156d7e 100644
+index e4b56e93..981f9d75 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -183,6 +183,11 @@ if test "x$enable_daemon" = "xyes"; then
-       ])
-       ])])
+@@ -190,6 +190,10 @@ if test "x$enable_daemon" = "xyes"; then
+   AC_SUBST(LIBBLKID_CFLAGS)
+   AC_SUBST(LIBBLKID_LIBS)
  
-+
 +  PKG_CHECK_MODULES(DCONF, [dconf >= 0.28.0])
 +  AC_SUBST(DCONF_CFLAGS)
 +  AC_SUBST(DCONF_LIBS)
 +
-   PKG_CHECK_MODULES(LIBMOUNT, [mount >= 2.18])
+   PKG_CHECK_MODULES(LIBMOUNT, [mount >= 2.30])
    AC_SUBST(LIBMOUNT_CFLAGS)
    AC_SUBST(LIBMOUNT_LIBS)
 diff --git a/src/Makefile.am b/src/Makefile.am
-index 1aed534a..eb7d912b 100644
+index 21adaf46..d7320ccb 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
 @@ -27,6 +27,7 @@ CPPFLAGS =                                                                     \
@@ -41,7 +40,7 @@ index 1aed534a..eb7d912b 100644
  	$(WARN_CFLAGS)                                                         \
  	$(NULL)
  
-@@ -151,6 +152,7 @@ libudisks_daemon_la_LIBADD =                                                   \
+@@ -152,6 +153,7 @@ libudisks_daemon_la_LIBADD =                                                   \
  	$(LIBELOGIND_LIBS)                                                     \
  	$(PART_LDFLAGS)                                                        \
  	$(SWAP_LIBS)                                                           \
@@ -49,7 +48,7 @@ index 1aed534a..eb7d912b 100644
  	$(top_builddir)/udisks/libudisks2.la                                   \
  	$(NULL)
  
-@@ -172,6 +174,7 @@ udisksd_LDADD =                                                                \
+@@ -173,6 +175,7 @@ udisksd_LDADD =                                                                \
  	$(GIO_LIBS)                                                            \
  	$(GMODULE_LIBS)                                                        \
  	$(BLOCKDEV_LIBS)                                                       \
@@ -58,7 +57,7 @@ index 1aed534a..eb7d912b 100644
  	$(NULL)
  
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index 64057c72..833f9b1c 100644
+index 5ca31865..970cf3be 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
 @@ -41,6 +41,8 @@
@@ -70,8 +69,8 @@ index 64057c72..833f9b1c 100644
  #include "udiskslogging.h"
  #include "udiskslinuxfilesystem.h"
  #include "udiskslinuxfilesystemhelpers.h"
-@@ -369,15 +371,61 @@ is_well_known_filesystem (const gchar *fstype)
-   return ret;
+@@ -471,15 +473,61 @@ is_well_known_filesystem (const gchar *fstype)
+   return FALSE;
  }
  
 +static gboolean read_whitelist = FALSE;
@@ -134,26 +133,23 @@ index 64057c72..833f9b1c 100644
  }
  
  /* ---------------------------------------------------------------------------------------------------- */
-@@ -456,6 +504,19 @@ calculate_fs_type (UDisksBlock  *block,
-  out:
-   g_assert (fs_type_to_use == NULL || g_utf8_validate (fs_type_to_use, -1, NULL));
+@@ -573,6 +621,19 @@ calculate_fs_type (UDisksBlock  *block,
+   if (*fs_signature)
+     g_warn_if_fail (g_utf8_validate (*fs_signature, -1, NULL));
  
 +  // If we have whitelist in use test that fs_type_to_use is part of allowed types.
-+  if ((*error == NULL) && !is_allowed_filesystem (fs_type_to_use))
++  if ((*error == NULL) && !is_allowed_filesystem (*fs_type))
 +    {
 +      g_set_error (error,
 +                   UDISKS_ERROR,
 +                   UDISKS_ERROR_OPTION_NOT_PERMITTED,
 +                   "Requested filesystem type `%s' is neither well-known nor "
 +                   "in /proc/filesystems nor in /etc/filesystems",
-+                   fs_type_to_use);
-+      g_free(fs_type_to_use);
-+      fs_type_to_use = NULL;
++                   *fs_type);
++      g_free(*fs_type);
++      *fs_type = NULL;
 +    }
 +
-   return fs_type_to_use;
+   return TRUE;
  }
  
--- 
-2.33.1
-

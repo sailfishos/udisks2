@@ -1,0 +1,404 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Bj=C3=B6rn=20Bidar?= <bjorn.bidar@jolla.com>
+Date: Mon, 8 Nov 2021 19:35:13 +0200
+Subject: [PATCH] Make libblockdev-mdraid support optional
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Björn Bidar <bjorn.bidar@jolla.com>
+---
+ configure.ac                  | 44 +++++++++++++++++++++--------------
+ src/Makefile.am               | 10 +++++---
+ src/udisksdaemon.c            |  7 ++++++
+ src/udiskslinuxblock.c        | 11 ++++++++-
+ src/udiskslinuxmanager.c      | 16 +++++++++++++
+ src/udiskslinuxmdraidobject.c |  6 +++++
+ src/udiskslinuxprovider.c     | 19 ++++++++++++++-
+ 7 files changed, 91 insertions(+), 22 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 010269e7..69c43ee7 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -489,23 +489,31 @@ if test "x$enable_daemon" = "xyes"; then
+   fi
+ 
+   # libblockdev mdraid
+-  SAVE_CFLAGS=$CFLAGS
+-  SAVE_LDFLAGS=$LDFLAGS
+-
+-  CFLAGS="$GLIB_CFLAGS"
+-  LDFLAGS="$GLIB_LIBS"
+-  AC_MSG_CHECKING([libblockdev-mdraid presence])
+-  AC_TRY_COMPILE([#include <blockdev/mdraid.h>], [],
+-                 [AC_MSG_RESULT([yes])
+-                 have_mdraid=yes],
+-                 [AC_MSG_RESULT([no])
+-                 have_mdraid=no])
+-
+-  CFLAGS=$SAVE_CFLAGS
+-  LDFLAGS=$SAVE_LDFLAGS
+-
+-  if test "x$have_mdraid" = "xno"; then
+-    AC_MSG_ERROR([BLOCKDEV MDRAID support requested but header or library not found])
++  AC_ARG_ENABLE(blockdev-mraid, [AS_HELP_STRING([--enable-blockdev-mdraid],
++                             [enable libblockdev-part support [default=yes]])],
++                             enable_blockdev_mdraid=yes,)
++  if test ! "x$enable_blockdev_mdraid" = "xno"; then
++     SAVE_CFLAGS=$CFLAGS
++     SAVE_LDFLAGS=$LDFLAGS
++
++     CFLAGS="$GLIB_CFLAGS"
++     LDFLAGS="$GLIB_LIBS"
++     AC_MSG_CHECKING([libblockdev-mdraid presence])
++     AC_TRY_COMPILE([#include <blockdev/mdraid.h>], [],
++                    [AC_MSG_RESULT([yes])
++                     AC_DEFINE([HAVE_BLOCKDEV_MDRAID], 1, [Define, if libblockdev-mdraid is available])
++                     have_blockdev_mdraid=yes],
++                    [AC_MSG_RESULT([no])
++                     have_blockdev_mdraid=no])
++
++     CFLAGS=$SAVE_CFLAGS
++     LDFLAGS=$SAVE_LDFLAGS
++
++     if test "x$have_blockdev_mdraid" = "xno"; then
++        if test "x$enable_blockdev_mdraid" = "xyes"; then
++           AC_MSG_ERROR([BLOCKDEV MDRAID support requested but header or library not found])
++        fi
++     fi
+   fi
+ 
+   # libblockdev fs
+@@ -568,6 +576,7 @@ if test "x$enable_daemon" = "xyes"; then
+     AC_MSG_ERROR([BLOCKDEV NVMe support requested but header or library not found])
+   fi
+ fi
++AM_CONDITIONAL(HAVE_BLOCKDEV_MDRAID, test "x$have_blockdev_mdraid" = "xyes")
+ 
+ 
+ # Internationalization
+@@ -700,4 +709,5 @@ echo "
+         iSCSI module:               ${have_iscsi}${have_libiscsi_session_info_msg}
+         LVM2  module:               ${have_lvm2}
+         LibStorageMgmt module:      ${have_lsm}
++        LibBlockDev-mdraid:         ${have_blockdev_mdraid:-no}
+ "
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 5a174d1a..21adaf46 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -79,9 +79,6 @@ libudisks_daemon_la_SOURCES =
+ 	udiskslinuxdriveobject.h         udiskslinuxdriveobject.c                \
+ 	udiskslinuxdrive.h               udiskslinuxdrive.c                      \
+ 	udiskslinuxdriveata.h            udiskslinuxdriveata.c                   \
+-	udiskslinuxmdraidobject.h        udiskslinuxmdraidobject.c               \
+-	udiskslinuxmdraidhelpers.h       udiskslinuxmdraidhelpers.c              \
+-	udiskslinuxmdraid.h              udiskslinuxmdraid.c                     \
+ 	udiskslinuxmanager.h             udiskslinuxmanager.c                    \
+ 	udiskslinuxmountoptions.h        udiskslinuxmountoptions.c               \
+ 	udisksbasejob.h                  udisksbasejob.c                         \
+@@ -112,6 +109,13 @@ libudisks_daemon_la_SOURCES =
+ 	$(BUILT_SOURCES)                                                         \
+ 	$(NULL)
+ 
++if HAVE_BLOCKDEV_MDRAID
++libudisks_daemon_la_SOURCES +=
++	udiskslinuxmdraidobject.h        udiskslinuxmdraidobject.c               \
++	udiskslinuxmdraidhelpers.h       udiskslinuxmdraidhelpers.c              \
++	udiskslinuxmdraid.h              udiskslinuxmdraid.c
++endif # HAVE_BLOCKDEV_MDRAID
++
+ libudisks_daemon_la_CFLAGS =                                                   \
+ 	-I$(top_srcdir)                                                        \
+ 	-DG_LOG_DOMAIN=\"udisks\"                                              \
+diff --git a/src/udisksdaemon.c b/src/udisksdaemon.c
+index cdb9e647..fcfb17cf 100644
+--- a/src/udisksdaemon.c
++++ b/src/udisksdaemon.c
+@@ -323,7 +323,9 @@ udisks_daemon_constructed (GObject *object)
+   BDPluginSpec part_plugin = {BD_PLUGIN_PART, NULL};
+   BDPluginSpec swap_plugin = {BD_PLUGIN_SWAP, NULL};
+   BDPluginSpec loop_plugin = {BD_PLUGIN_LOOP, NULL};
++#ifdef HAVE_BLOCKDEV_MDRAID
+   BDPluginSpec mdraid_plugin = {BD_PLUGIN_MDRAID, NULL};
++#endif
+   BDPluginSpec fs_plugin = {BD_PLUGIN_FS, NULL};
+   BDPluginSpec crypto_plugin = {BD_PLUGIN_CRYPTO, NULL};
+   BDPluginSpec nvme_plugin = {BD_PLUGIN_NVME, NULL};
+@@ -331,8 +333,13 @@ udisks_daemon_constructed (GObject *object)
+   /* The core daemon needs the part, swap, loop, mdraid, fs and crypto plugins.
+      Additional plugins are required by various modules, but they make sure
+      plugins are loaded themselves. */
++#if defined(HAVE_BLOCKDEV_MDRAID)
+   BDPluginSpec *plugins[] = {&part_plugin, &swap_plugin, &loop_plugin, &mdraid_plugin,
+                              &fs_plugin, &crypto_plugin, &nvme_plugin, NULL};
++#else
++  BDPluginSpec *plugins[] = {&part_plugin, &swap_plugin, &loop_plugin,
++                             &fs_plugin, &crypto_plugin, &nvme_plugin, NULL};
++#endif
+   BDPluginSpec **plugin_p = NULL;
+   error = NULL;
+ 
+diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
+index 829dd5f7..0f83f35e 100644
+--- a/src/udiskslinuxblock.c
++++ b/src/udiskslinuxblock.c
+@@ -62,7 +62,6 @@
+ #include "udisksbasejob.h"
+ #include "udiskssimplejob.h"
+ #include "udiskslinuxdriveata.h"
+-#include "udiskslinuxmdraidobject.h"
+ #include "udiskslinuxdevice.h"
+ #include "udiskslinuxpartition.h"
+ #include "udiskslinuxencrypted.h"
+@@ -72,6 +71,10 @@
+ #include "udisksutabmonitor.h"
+ #include "udisksutabentry.h"
+ 
++#ifdef HAVE_BLOCKDEV_MDRAID
++#include "udiskslinuxmdraidobject.h"
++#endif
++
+ /**
+  * SECTION:udiskslinuxblock
+  * @title: UDisksLinuxBlock
+@@ -311,6 +314,8 @@ find_drive (GDBusObjectManagerServer  *object_manager,
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+ 
++#ifdef HAVE_BLOCKDEV_MDRAID
++
+ static UDisksLinuxMDRaidObject *
+ find_mdraid (GDBusObjectManagerServer  *object_manager,
+              const gchar               *md_uuid)
+@@ -383,6 +388,8 @@ update_mdraid (UDisksLinuxBlock         *block,
+   udisks_block_set_mdraid_member (iface, objpath_mdraid_member);
+ }
+ 
++#endif
++
+ /* ---------------------------------------------------------------------------------------------------- */
+ 
+ /**
+@@ -1260,7 +1267,9 @@ udisks_linux_block_update (UDisksLinuxBlock       *block,
+   update_hints (daemon, block, device, drive);
+   update_configuration (block, daemon);
+   update_userspace_mount_options (block, daemon);
++#ifdef HAVE_BLOCKDEV_MDRAID
+   update_mdraid (block, device, drive, object_manager);
++#endif
+ 
+  out:
+   g_dbus_interface_skeleton_flush (G_DBUS_INTERFACE_SKELETON (block));
+diff --git a/src/udiskslinuxmanager.c b/src/udiskslinuxmanager.c
+index 5bfeec10..f6213f0b 100644
+--- a/src/udiskslinuxmanager.c
++++ b/src/udiskslinuxmanager.c
+@@ -35,7 +35,9 @@
+ 
+ #include <blockdev/loop.h>
+ #include <blockdev/fs.h>
++#ifdef HAVE_BLOCKDEV_MDRAID
+ #include <blockdev/mdraid.h>
++#endif
+ 
+ #include "udiskslogging.h"
+ #include "udiskslinuxmanager.h"
+@@ -531,7 +533,9 @@ wait_for_array_object (UDisksDaemon *daemon,
+   return ret;
+ }
+ 
++#ifdef HAVE_BLOCKDEV_MDRAID
+ static const gchar *raid_level_whitelist[] = {"raid0", "raid1", "raid4", "raid5", "raid6", "raid10", NULL};
++#endif
+ 
+ static gboolean
+ handle_mdraid_create (UDisksManager         *_object,
+@@ -542,6 +546,7 @@ handle_mdraid_create (UDisksManager         *_object,
+                       guint64                arg_chunk,
+                       GVariant              *arg_options)
+ {
++#ifdef HAVE_BLOCKDEV_MDRAID
+   UDisksLinuxManager *manager = UDISKS_LINUX_MANAGER (_object);
+   UDisksObject *array_object = NULL;
+   uid_t caller_uid;
+@@ -898,6 +903,9 @@ handle_mdraid_create (UDisksManager         *_object,
+   g_clear_object (&array_object);
+ 
+   return TRUE; /* returning TRUE means that we handled the method invocation */
++#else
++  return FALSE;
++#endif
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+@@ -1101,6 +1109,7 @@ handle_can_check (UDisksManager         *object,
+                   GDBusMethodInvocation *invocation,
+                   const gchar           *type)
+ {
++#ifdef HAVE_BLOCKDEV_MDRAID
+   GError *error = NULL;
+   gchar *required_utility = NULL;
+   gboolean ret;
+@@ -1121,6 +1130,9 @@ handle_can_check (UDisksManager         *object,
+   g_free (required_utility);
+ 
+   return TRUE;
++#else
++  return FALSE;
++#endif
+ }
+ 
+ static gboolean
+@@ -1128,6 +1140,7 @@ handle_can_repair (UDisksManager         *object,
+                    GDBusMethodInvocation *invocation,
+                    const gchar           *type)
+ {
++#ifdef HAVE_BLOCKDEV_MDRAID
+   GError *error = NULL;
+   gchar *required_utility = NULL;
+   gboolean ret;
+@@ -1148,6 +1161,9 @@ handle_can_repair (UDisksManager         *object,
+   g_free (required_utility);
+ 
+   return TRUE;
++#else
++  return FALSE;
++#endif
+ }
+ 
+ 
+diff --git a/src/udiskslinuxmdraidobject.c b/src/udiskslinuxmdraidobject.c
+index 7de0618a..5e3f3f94 100644
+--- a/src/udiskslinuxmdraidobject.c
++++ b/src/udiskslinuxmdraidobject.c
+@@ -432,7 +432,11 @@ mdraid_update (UDisksLinuxMDRaidObject  *object,
+                const gchar              *uevent_action,
+                GDBusInterface           *_iface)
+ {
++#ifdef HAVE_BLOCKDEV_MDRAID
+   return udisks_linux_mdraid_update (UDISKS_LINUX_MDRAID (object->iface_mdraid), object);
++#else
++  return FALSE;
++#endif
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+@@ -627,6 +631,7 @@ udisks_linux_mdraid_object_uevent (UDisksLinuxMDRaidObject *object,
+                                    UDisksLinuxDevice       *device,
+                                    gboolean                 is_member)
+ {
++#ifdef HAVE_BLOCKDEV_MDRAID
+   g_return_if_fail (UDISKS_IS_LINUX_MDRAID_OBJECT (object));
+   g_return_if_fail (UDISKS_IS_LINUX_DEVICE (device));
+ 
+@@ -740,6 +745,7 @@ udisks_linux_mdraid_object_uevent (UDisksLinuxMDRaidObject *object,
+     }
+  out:
+   ;
++#endif
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+diff --git a/src/udiskslinuxprovider.c b/src/udiskslinuxprovider.c
+index a44e92bf..d59fa27d 100644
+--- a/src/udiskslinuxprovider.c
++++ b/src/udiskslinuxprovider.c
+@@ -30,7 +30,6 @@
+ #include "udiskslinuxprovider.h"
+ #include "udiskslinuxblockobject.h"
+ #include "udiskslinuxdriveobject.h"
+-#include "udiskslinuxmdraidobject.h"
+ #include "udiskslinuxmanager.h"
+ #include "udiskslinuxmanagernvme.h"
+ #include "udisksstate.h"
+@@ -42,6 +41,10 @@
+ #include "udisksconfigmanager.h"
+ #include "udisksutabentry.h"
+ 
++#ifdef HAVE_BLOCKDEV_MDRAID
++#include "udiskslinuxmdraidobject.h"
++#endif
++
+ /**
+  * SECTION:udiskslinuxprovider
+  * @title: UDisksLinuxProvider
+@@ -77,9 +80,11 @@ struct _UDisksLinuxProvider
+   GHashTable *sysfs_path_to_drive;
+ 
+   /* maps from array UUID and sysfs_path to UDisksLinuxMDRaidObject instances */
++#ifdef HAVE_BLOCKDEV_MDRAID
+   GHashTable *uuid_to_mdraid;
+   GHashTable *sysfs_path_to_mdraid;
+   GHashTable *sysfs_path_to_mdraid_members;
++#endif
+ 
+   /* maps from UDisksModule to nested hashtables containing object skeleton instances */
+   GHashTable *module_objects;
+@@ -185,9 +190,11 @@ udisks_linux_provider_finalize (GObject *object)
+   g_hash_table_unref (provider->sysfs_to_block);
+   g_hash_table_unref (provider->vpd_to_drive);
+   g_hash_table_unref (provider->sysfs_path_to_drive);
++#ifdef HAVE_BLOCKDEV_MDRAID
+   g_hash_table_unref (provider->uuid_to_mdraid);
+   g_hash_table_unref (provider->sysfs_path_to_mdraid);
+   g_hash_table_unref (provider->sysfs_path_to_mdraid_members);
++#endif
+   g_hash_table_unref (provider->module_objects);
+   g_object_unref (provider->gudev_client);
+ 
+@@ -712,6 +719,7 @@ udisks_linux_provider_start (UDisksProvider *_provider)
+                                                          g_str_equal,
+                                                          g_free,
+                                                          NULL);
++#ifdef HAVE_BLOCKDEV_MDRAID
+   provider->uuid_to_mdraid = g_hash_table_new_full (g_str_hash,
+                                                     g_str_equal,
+                                                     g_free,
+@@ -724,6 +732,7 @@ udisks_linux_provider_start (UDisksProvider *_provider)
+                                                                   g_str_equal,
+                                                                   g_free,
+                                                                   NULL);
++#endif
+   provider->module_objects = g_hash_table_new_full (g_direct_hash,
+                                                     g_direct_equal,
+                                                     NULL,
+@@ -912,6 +921,8 @@ perform_initial_housekeeping_for_drive (GTask           *task,
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+ 
++#ifdef HAVE_BLOCKDEV_MDRAID
++
+ /* called with lock held */
+ 
+ static void
+@@ -1055,6 +1066,8 @@ handle_block_uevent_for_mdraid (UDisksLinuxProvider *provider,
+     handle_block_uevent_for_mdraid_with_uuid (provider, action, device, NULL, FALSE);
+ }
+ 
++#endif
++
+ /* ---------------------------------------------------------------------------------------------------- */
+ 
+ /* called with lock held */
+@@ -1386,7 +1399,9 @@ handle_block_uevent (UDisksLinuxProvider *provider,
+     {
+       handle_block_uevent_for_block (provider, action, device);
+       handle_block_uevent_for_drive (provider, action, device);
++#ifdef HAVE_BLOCKDEV_MDRAID
+       handle_block_uevent_for_mdraid (provider, action, device);
++#endif
+       handle_block_uevent_for_modules (provider, action, device);
+     }
+   else
+@@ -1405,7 +1420,9 @@ handle_block_uevent (UDisksLinuxProvider *provider,
+       else
+         {
+           handle_block_uevent_for_modules (provider, action, device);
++#ifdef HAVE_BLOCKDEV_MDRAID
+           handle_block_uevent_for_mdraid (provider, action, device);
++#endif
+           handle_block_uevent_for_drive (provider, action, device);
+           handle_block_uevent_for_block (provider, action, device);
+         }

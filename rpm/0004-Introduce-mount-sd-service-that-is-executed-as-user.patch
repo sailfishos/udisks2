@@ -14,7 +14,7 @@ Subject: [PATCH] Introduce mount-sd service that is executed as user
  create mode 100644 tools/udisksctl-user
 
 diff --git a/data/80-udisks2.rules b/data/80-udisks2.rules
-index 39bfa28b..64ac2836 100644
+index 00cf4a04..36eff0ac 100644
 --- a/data/80-udisks2.rules
 +++ b/data/80-udisks2.rules
 @@ -48,6 +48,11 @@ KERNEL=="mmcblk[0-9]*", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", ENV{MMC_TYPE}==
@@ -30,7 +30,7 @@ index 39bfa28b..64ac2836 100644
  KERNEL=="mmcblk[0-9]boot[0-9]*", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", IMPORT{parent}="ID_*"
  # ditto for memstick
 diff --git a/data/Makefile.am b/data/Makefile.am
-index 758644be..9bce130a 100644
+index 946823de..6fe67dbd 100644
 --- a/data/Makefile.am
 +++ b/data/Makefile.am
 @@ -18,14 +18,17 @@ dbusconf_DATA = $(dbusconf_in_files:.conf.in=.conf)
@@ -96,6 +96,3 @@ index 00000000..04a745d2
 +ARGS=$@
 +DEVICEUSER=$(loginctl list-sessions | grep seat0 | tr -s " " | cut -d " " -f 4)
 +/bin/su -l $DEVICEUSER -c "/usr/bin/udisksctl $ARGS"
--- 
-2.34.1
-

@@ -9,10 +9,10 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
-index b79d22b3..776d1612 100644
+index 2f2f35ff..be4974cd 100644
 --- a/data/org.freedesktop.UDisks2.policy.in
 +++ b/data/org.freedesktop.UDisks2.policy.in
-@@ -340,7 +340,7 @@
+@@ -351,7 +351,7 @@
      <message>Authentication is required to rescan a device</message>
      <defaults>
        <allow_any>auth_admin</allow_any>
@@ -21,6 +21,3 @@ index b79d22b3..776d1612 100644
        <allow_active>yes</allow_active>
      </defaults>
    </action>
--- 
-2.33.1
-

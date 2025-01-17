@@ -9,18 +9,15 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index f7c99757..64057c72 100644
+index 9f4880ad..5ca31865 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
-@@ -602,7 +602,7 @@ calculate_mount_point (UDisksDaemon  *daemon,
+@@ -752,7 +752,7 @@ calculate_mount_point (UDisksDaemon  *daemon,
+               goto out;
              }
            /* Then create the per-user MOUNT_BASE/$USER */
- #ifdef HAVE_ACL
--          if (g_mkdir (mount_dir, 0700) != 0 && errno != EEXIST)
+-          if (g_mkdir (mount_dir, 0750) != 0 && errno != EEXIST)
 +          if (g_mkdir (mount_dir, 0755) != 0 && errno != EEXIST)
- #else
-           if (g_mkdir (mount_dir, 0750) != 0 && errno != EEXIST)
- #endif
--- 
-2.33.1
-
+             {
+               g_set_error (error,
+                            UDISKS_ERROR,

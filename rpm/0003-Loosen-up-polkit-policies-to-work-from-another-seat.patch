@@ -9,7 +9,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
-index 4b02f46f..b79d22b3 100644
+index 25c3f5dd..2f2f35ff 100644
 --- a/data/org.freedesktop.UDisks2.policy.in
 +++ b/data/org.freedesktop.UDisks2.policy.in
 @@ -16,8 +16,8 @@
@@ -45,7 +45,7 @@ index 4b02f46f..b79d22b3 100644
      </defaults>
    </action>
  
-@@ -63,9 +63,9 @@
+@@ -74,9 +74,9 @@
      <description>Unmount a device mounted by another user</description>
      <message>Authentication is required to unmount a filesystem mounted by another user</message>
      <defaults>
@@ -58,7 +58,7 @@ index 4b02f46f..b79d22b3 100644
      </defaults>
    </action>
  
-@@ -102,7 +102,7 @@
+@@ -113,7 +113,7 @@
      <defaults>
        <allow_any>auth_admin</allow_any>
        <allow_inactive>auth_admin</allow_inactive>
@@ -67,7 +67,7 @@ index 4b02f46f..b79d22b3 100644
      </defaults>
    </action>
  
-@@ -111,9 +111,9 @@
+@@ -122,9 +122,9 @@
      <description>Unlock an encrypted device plugged into another seat</description>
      <message>Authentication is required to unlock an encrypted device</message>
      <defaults>
@@ -80,7 +80,7 @@ index 4b02f46f..b79d22b3 100644
      </defaults>
    </action>
  
-@@ -319,7 +319,7 @@
+@@ -330,7 +330,7 @@
      <defaults>
        <allow_any>auth_admin</allow_any>
        <allow_inactive>auth_admin</allow_inactive>
@@ -89,7 +89,7 @@ index 4b02f46f..b79d22b3 100644
      </defaults>
    </action>
  
-@@ -328,9 +328,9 @@
+@@ -339,9 +339,9 @@
      <description>Modify a device</description>
      <message>Authentication is required to modify a device plugged into another seat</message>
      <defaults>
@@ -102,7 +102,7 @@ index 4b02f46f..b79d22b3 100644
      </defaults>
    </action>
  
-@@ -384,7 +384,7 @@
+@@ -395,7 +395,7 @@
      <defaults>
        <allow_any>auth_admin</allow_any>
        <allow_inactive>auth_admin</allow_inactive>
@@ -111,6 +111,3 @@ index 4b02f46f..b79d22b3 100644
      </defaults>
    </action>
  
--- 
-2.33.1
-
