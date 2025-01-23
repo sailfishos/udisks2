@@ -3,11 +3,11 @@
 %global polkit_version                  0.102
 %global systemd_version                 208
 %global dbus_version                    1.4.0
-%global libblockdev_version             2.25
+%global libblockdev_version             3.2.1
 
 Name:    udisks2
 Summary: Disk Manager
-Version: 2.9.4
+Version: 2.10.1
 Release: 1
 License: GPLv2+
 URL:     https://github.com/storaged-project/udisks
@@ -16,20 +16,18 @@ Source1: udisks2-symlink-mount-path
 Source2: udisks2-fs-mount-whitelist.txt
 
 # i=1; for j in 00*patch; do printf "Patch%04d: %s\n" $i $j; i=$((i+1));done
-Patch0001: 0001-Make-libblockdev-mdraid-and-part-support-optional.patch
+Patch0001: 0001-Make-libblockdev-mdraid-support-optional.patch
 Patch0002: 0002-Make-libatasmart-support-optional.patch
 Patch0003: 0003-Loosen-up-polkit-policies-to-work-from-another-seat.patch
 Patch0004: 0004-Introduce-mount-sd-service-that-is-executed-as-user.patch
-Patch0005: 0005-Disable-zram-rule-for-now.patch
-Patch0006: 0006-Create-mount-path-with-755-rights.patch
-Patch0007: 0007-Make-it-possible-to-encrypt-mmcblk-format-with-encry.patch
-Patch0008: 0008-Reduce-reserved-blocks-percentage-to-zero-for-ext2-e.patch
-Patch0009: 0009-Allow-rescan-for-inactive.patch
-Patch0010: 0010-Allow-whitelisting-filesystems-that-can-be-mounted.patch
-Patch0011: 0011-Add-option-to-set-filesystem-group-permissions.patch
-Patch0012: 0012-Always-mount-filesystems-using-the-UUID-instead-of-l.patch
-Patch0013: 0013-Check-if-GTK_DOC_CHECK-is-defined-in-case-gtk-doc-is.patch
-Patch0014: 0014-Add-workaround-in-case-gtk-doc-isn-t-installed.patch
+Patch0005: 0005-Create-mount-path-with-755-rights.patch
+Patch0006: 0006-Make-it-possible-to-encrypt-mmcblk-format-with-encry.patch
+Patch0007: 0007-Allow-rescan-for-inactive.patch
+Patch0008: 0008-Allow-whitelisting-filesystems-that-can-be-mounted.patch
+Patch0009: 0009-Add-option-to-set-filesystem-group-permissions.patch
+Patch0010: 0010-Always-mount-filesystems-using-the-UUID-instead-of-l.patch
+Patch0011: 0011-Check-if-GTK_DOC_CHECK-is-defined-in-case-gtk-doc-is.patch
+Patch0012: 0012-Add-workaround-in-case-gtk-doc-isn-t-installed.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
@@ -40,7 +38,6 @@ BuildRequires: pkgconfig(openssl)
 BuildRequires: pkgconfig(mount) >= 2.30
 BuildRequires: pkgconfig(dconf) >= 0.28.0
 BuildRequires: pkgconfig(uuid)
-
 BuildRequires: gettext-devel
 BuildRequires: autoconf
 BuildRequires: automake
@@ -55,6 +52,7 @@ BuildRequires: libblockdev-swap-devel   >= %{libblockdev_version}
 BuildRequires: libblockdev-fs-devel     >= %{libblockdev_version}
 BuildRequires: libblockdev-part-devel   >= %{libblockdev_version}
 BuildRequires: libblockdev-crypto-devel >= %{libblockdev_version}
+BuildRequires: libblockdev-nvme-devel   >= %{libblockdev_version}
 BuildRequires: oneshot
 
 Requires: libblockdev        >= %{libblockdev_version}
@@ -63,30 +61,19 @@ Requires: libblockdev-swap   >= %{libblockdev_version}
 Requires: libblockdev-fs     >= %{libblockdev_version}
 Requires: libblockdev-crypto >= %{libblockdev_version}
 Requires: libblockdev-part   >= %{libblockdev_version}
+Requires: libblockdev-nvme   >= %{libblockdev_version}
 
 %{?systemd_requires}
 
-# Needed to pull in the system bus daemon
 Requires: dbus >= %{dbus_version}
-# Needed to pull in the systemd as that provides udev daemon
 Requires: systemd >= %{systemd_version}
-# For mount, umount, mkswap
 Requires: util-linux
-# For mkfs.ext3, mkfs.ext3, e2label
 Requires: e2fsprogs
-#Requires: gdisk
-# For ejecting removable disks
-#Requires: eject
 Requires: libmount >= 2.30
-# The actual polkit agent
 Requires: polkit >= %{polkit_version}
-
 Requires: lib%{name} = %{version}-%{release}
 
 %{_oneshot_requires_post}
-
-Obsoletes: sd-utils < 0.1.6
-Provides: sd-utils >= 0.1.6
 
 %description
 The Udisks project provides a daemon, tools and libraries to access and
@@ -166,10 +153,8 @@ fi
 
 %files -f udisks2.lang
 %license COPYING
-
 %dir %{_sysconfdir}/udisks2
 %{_sysconfdir}/udisks2/udisks2.conf
-
 %{_datadir}/dbus-1/system.d/org.freedesktop.UDisks2.conf
 %{_sysconfdir}/dconf/db/vendor.d/locks/*
 %{_datadir}/bash-completion/completions/udisksctl
@@ -181,12 +166,11 @@ fi
 %{_oneshotdir}/*
 %dir %{_libexecdir}/udisks2
 %{_libexecdir}/udisks2/udisksd
-
 %{_bindir}/udisksctl
 %{_bindir}/udisksctl-user
-
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.policy
 %{_datadir}/dbus-1/system-services/org.freedesktop.UDisks2.service
+%exclude %{_datadir}/zsh/site-functions/*
 
 %files -n lib%{name}
 %{_libdir}/libudisks2.so.*

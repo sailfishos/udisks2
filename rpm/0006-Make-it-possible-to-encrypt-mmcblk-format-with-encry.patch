@@ -9,10 +9,10 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 5 insertions(+)
 
 diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
-index a59793bf..61f904c4 100644
+index 0f83f35e..6285e9e8 100644
 --- a/src/udiskslinuxblock.c
 +++ b/src/udiskslinuxblock.c
-@@ -2316,8 +2316,13 @@ wait_for_luks_uuid (UDisksDaemon *daemon,
+@@ -2330,8 +2330,13 @@ wait_for_luks_uuid (UDisksDaemon *daemon,
    if (block == NULL)
      goto out;
  
@@ -26,6 +26,3 @@ index a59793bf..61f904c4 100644
  
    ret = g_object_ref (data->object);
  
--- 
-2.33.1
-

@@ -8,22 +8,21 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Björn Bidar <bjorn.bidar@jolla.com>
 ---
- configure.ac              | 18 +++++++++++++++---
- src/udiskslinuxdriveata.c | 14 ++++++++++++++
+ configure.ac              | 17 ++++++++++++++---
+ src/udiskslinuxdriveata.c | 15 +++++++++++++++
  2 files changed, 29 insertions(+), 3 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 0e186fc9..6e09a1c0 100644
+index 69c43ee7..e4b56e93 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -168,9 +168,20 @@ if test "x$enable_daemon" = "xyes"; then
+@@ -172,9 +172,19 @@ if test "x$enable_daemon" = "xyes"; then
    AC_SUBST(BLOCKDEV_CFLAGS)
    AC_SUBST(BLOCKDEV_LIBS)
  
 -  PKG_CHECK_MODULES(LIBATASMART, [libatasmart >= 0.17])
 -  AC_SUBST(LIBATASMART_CFLAGS)
 -  AC_SUBST(LIBATASMART_LIBS)
-+
 +  AC_ARG_ENABLE(libata, AS_HELP_STRING([--enable-libatasmart], [enable libatasmart support]))
 +  AS_IF([test "x$enable_libatasmart" != "xno"],
 +      [PKG_CHECK_MODULES(LIBATASMART, [libatasmart >= 0.17],
@@ -38,21 +37,21 @@ index 0e186fc9..6e09a1c0 100644
 +      ])
 +      ])])
  
-   PKG_CHECK_MODULES(LIBMOUNT, [mount >= 2.18])
-   AC_SUBST(LIBMOUNT_CFLAGS)
-@@ -841,6 +852,7 @@ echo "
+   PKG_CHECK_MODULES(LIBBLKID, [blkid])
+   AC_SUBST(LIBBLKID_CFLAGS)
+@@ -692,6 +702,7 @@ echo "
          using libsystemd-login:     ${have_libsystemd_login}
          using libelogind:           ${have_libelogind}
          use /media for mounting:    ${fhs_media}
 +        libatasmart:                ${have_libatasmart:-no}
          acl support:                ${have_acl}
-         using libmount/utab:        ${have_libmount_utab}
  
+         compiler:                   ${CC}
 diff --git a/src/udiskslinuxdriveata.c b/src/udiskslinuxdriveata.c
-index 2de138cd..c3943b9d 100644
+index b86c3465..33d3efc5 100644
 --- a/src/udiskslinuxdriveata.c
 +++ b/src/udiskslinuxdriveata.c
-@@ -36,7 +36,9 @@
+@@ -37,7 +37,9 @@
  #include <glib/gstdio.h>
  #include <errno.h>
  
@@ -62,7 +61,7 @@ index 2de138cd..c3943b9d 100644
  
  #include "udiskslogging.h"
  #include "udiskslinuxprovider.h"
-@@ -356,6 +358,7 @@ typedef struct
+@@ -357,6 +359,7 @@ typedef struct
    gint num_attributes_failed_in_the_past;
  } ParseData;
  
@@ -70,23 +69,18 @@ index 2de138cd..c3943b9d 100644
  static void
  parse_attr_cb (SkDisk                           *d,
                 const SkSmartAttributeParsedData *a,
-@@ -436,6 +439,7 @@ selftest_status_to_string (SkSmartSelfTestExecutionStatus status)
+@@ -437,7 +440,10 @@ selftest_status_to_string (SkSmartSelfTestExecutionStatus status)
      }
    return ret;
  }
 +#endif
  
- static gboolean
- get_pm_state (UDisksLinuxDevice *device, GError **error, guchar *count)
-@@ -474,6 +478,7 @@ get_pm_state (UDisksLinuxDevice *device, GError **error, guchar *count)
-   return rc;
- }
- 
++
 +#ifdef HAVE_ATA_SMART
  static gboolean update_io_stats (UDisksLinuxDriveAta *drive, UDisksLinuxDevice *device)
  {
    const gchar *drivepath = g_udev_device_get_sysfs_path (device->udev_device);
-@@ -505,6 +510,7 @@ static gboolean update_io_stats (UDisksLinuxDriveAta *drive, UDisksLinuxDevice *
+@@ -469,6 +475,7 @@ static gboolean update_io_stats (UDisksLinuxDriveAta *drive, UDisksLinuxDevice *
      }
    return noio;
  }
@@ -94,7 +88,7 @@ index 2de138cd..c3943b9d 100644
  
  /**
   * udisks_linux_drive_ata_refresh_smart_sync:
-@@ -535,6 +541,7 @@ udisks_linux_drive_ata_refresh_smart_sync (UDisksLinuxDriveAta  *drive,
+@@ -499,6 +506,7 @@ udisks_linux_drive_ata_refresh_smart_sync (UDisksLinuxDriveAta  *drive,
                                             GCancellable         *cancellable,
                                             GError              **error)
  {
@@ -102,7 +96,7 @@ index 2de138cd..c3943b9d 100644
    UDisksLinuxDriveObject *object;
    UDisksLinuxDevice *device = NULL;
    gboolean ret = FALSE;
-@@ -693,6 +700,9 @@ udisks_linux_drive_ata_refresh_smart_sync (UDisksLinuxDriveAta  *drive,
+@@ -665,6 +673,9 @@ udisks_linux_drive_ata_refresh_smart_sync (UDisksLinuxDriveAta  *drive,
      sk_disk_free (d);
    g_clear_object (&object);
    return ret;
@@ -112,7 +106,7 @@ index 2de138cd..c3943b9d 100644
  }
  
  /* ---------------------------------------------------------------------------------------------------- */
-@@ -719,6 +729,7 @@ udisks_linux_drive_ata_smart_selftest_sync (UDisksLinuxDriveAta  *drive,
+@@ -691,6 +702,7 @@ udisks_linux_drive_ata_smart_selftest_sync (UDisksLinuxDriveAta  *drive,
                                              GCancellable         *cancellable,
                                              GError              **error)
  {
@@ -120,7 +114,7 @@ index 2de138cd..c3943b9d 100644
    UDisksLinuxDriveObject  *object;
    UDisksLinuxDevice *device = NULL;
    SkDisk *d = NULL;
-@@ -775,6 +786,9 @@ udisks_linux_drive_ata_smart_selftest_sync (UDisksLinuxDriveAta  *drive,
+@@ -752,6 +764,9 @@ udisks_linux_drive_ata_smart_selftest_sync (UDisksLinuxDriveAta  *drive,
      sk_disk_free (d);
    g_clear_object (&object);
    return ret;
@@ -130,6 +124,3 @@ index 2de138cd..c3943b9d 100644
  }
  
  /* ---------------------------------------------------------------------------------------------------- */
--- 
-2.33.1
-

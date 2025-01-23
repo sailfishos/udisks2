@@ -8,30 +8,24 @@ Subject: [PATCH] Always mount filesystems using the UUID instead of label.
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index 60cc254c..81c370f5 100644
+index 02589fa2..f9bd37ad 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
-@@ -705,6 +705,9 @@ calculate_mount_point (UDisksDaemon  *daemon,
-    *
-    *       See http://en.wikipedia.org/wiki/UTF-8 for details.
-    */
+@@ -847,11 +847,16 @@ calculate_mount_point (UDisksDaemon  *daemon,
+       *persistent = TRUE;
+     }
+ 
 +#if 1
 +  (void)label;
 +#else
    if (label != NULL && strlen (label) > 0)
      {
-       str = g_string_new (NULL);
-@@ -721,7 +724,9 @@ calculate_mount_point (UDisksDaemon  *daemon,
-       mount_point = g_string_free (str, FALSE);
-       g_free (s);
+       mount_point = sanitize_mount_point (mount_dir, label);
      }
 -  else if (uuid != NULL && strlen (uuid) > 0)
 +  else
 +#endif
 +  if (uuid != NULL && strlen (uuid) > 0)
      {
-       str = g_string_new (NULL);
-       g_string_append_printf (str, "%s/", mount_dir);
--- 
-2.33.1
-
+       mount_point = sanitize_mount_point (mount_dir, uuid);
+     }

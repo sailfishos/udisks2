@@ -9,7 +9,7 @@ Subject: [PATCH] Check if GTK_DOC_CHECK is defined in case gtk-doc isn't
  1 file changed, 4 insertions(+)
 
 diff --git a/configure.ac b/configure.ac
-index a9156d7e..de640518 100644
+index 981f9d75..15a08057 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -96,7 +96,11 @@ if test -z "$enable_available_modules"; then
@@ -24,6 +24,3 @@ index a9156d7e..de640518 100644
  
  AC_ARG_ENABLE(man,
                [AS_HELP_STRING([--enable-man],
--- 
-2.33.1
-
