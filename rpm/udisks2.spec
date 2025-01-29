@@ -28,6 +28,7 @@ Patch0009: 0009-Add-option-to-set-filesystem-group-permissions.patch
 Patch0010: 0010-Always-mount-filesystems-using-the-UUID-instead-of-l.patch
 Patch0011: 0011-Check-if-GTK_DOC_CHECK-is-defined-in-case-gtk-doc-is.patch
 Patch0012: 0012-Add-workaround-in-case-gtk-doc-isn-t-installed.patch
+Patch0013: 0013-Don-t-consider-format-with-mkfs-args-as-system-devic.patch
 
 BuildRequires: pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires: pkgconfig(gobject-introspection-1.0)
