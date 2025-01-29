@@ -1,0 +1,29 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pekka Vuorela <pekka.vuorela@jolla.com>
+Date: Wed, 29 Jan 2025 09:54:10 +0200
+Subject: [PATCH] Don't consider format with mkfs-args as system-device format
+
+Passing mkfs-args made the action
+"org.freedesktop.udisks2.modify-device-system" instead of
+"org.freedesktop.udisks2.modify-device" it is without.
+
+Now, instead of loosening the policy for former, wherever it's needed,
+let's just keep on using the same action_id regardless of mfks-args
+passed or not.
+---
+ src/udiskslinuxblock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
+index 38208167..e989f2a6 100644
+--- a/src/udiskslinuxblock.c
++++ b/src/udiskslinuxblock.c
+@@ -3510,7 +3510,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+                           options,
+                           invocation,
+                           g_strcmp0 (erase_type, "ata-secure-erase") == 0 || g_strcmp0 (erase_type, "ata-secure-erase-enhanced") == 0,
+-                          extra_args != NULL,
++                          FALSE, /* extra_args != NULL, */
+                           config_items != NULL || teardown_flag))
+     goto out;
+ 
