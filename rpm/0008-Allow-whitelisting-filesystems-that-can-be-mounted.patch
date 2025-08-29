@@ -14,7 +14,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  3 files changed, 70 insertions(+), 2 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index e4b56e93..981f9d75 100644
+index 3e1efb5fd7a93a9cd3914d5794a63969c6948541..8e6396ffbff48077b52cf62e948e32d652b97931 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -190,6 +190,10 @@ if test "x$enable_daemon" = "xyes"; then
@@ -29,10 +29,10 @@ index e4b56e93..981f9d75 100644
    AC_SUBST(LIBMOUNT_CFLAGS)
    AC_SUBST(LIBMOUNT_LIBS)
 diff --git a/src/Makefile.am b/src/Makefile.am
-index 21adaf46..d7320ccb 100644
+index 48f5be753b99cbfb43f03f5c9da2386f7753bf98..53f950fd85ed2e85891d53c0df0888a26ea4f2b8 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
-@@ -27,6 +27,7 @@ CPPFLAGS =                                                                     \
+@@ -27,6 +27,7 @@ AM_CPPFLAGS =                                                                  \
  	$(GIO_CFLAGS)                                                          \
  	$(GMODULE_CFLAGS)                                                      \
  	$(BLOCKDEV_CFLAGS)                                                     \
@@ -57,7 +57,7 @@ index 21adaf46..d7320ccb 100644
  	$(NULL)
  
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index 5ca31865..970cf3be 100644
+index 5ca318656fdbfceec71de9b6a88f1268a048612d..970cf3bec3c32177de069e6de14804535306ea8d 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
 @@ -41,6 +41,8 @@

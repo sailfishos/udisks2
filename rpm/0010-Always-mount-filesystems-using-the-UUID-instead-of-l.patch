@@ -8,7 +8,7 @@ Subject: [PATCH] Always mount filesystems using the UUID instead of label.
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index 02589fa2..f9bd37ad 100644
+index 02589fa230feac275ad6ef4f5a2943a2e38e3704..f9bd37ad1071c900574080dbe56c05931459580d 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
 @@ -847,11 +847,16 @@ calculate_mount_point (UDisksDaemon  *daemon,

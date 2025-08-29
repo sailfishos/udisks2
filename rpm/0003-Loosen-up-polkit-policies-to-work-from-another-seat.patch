@@ -9,7 +9,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/data/org.freedesktop.UDisks2.policy.in b/data/org.freedesktop.UDisks2.policy.in
-index 25c3f5dd..2f2f35ff 100644
+index 25c3f5dd92ccd094e3b9bc91397ca6f3182ea4d5..2f2f35ff6308141ab1926acc7385eee36330ba21 100644
 --- a/data/org.freedesktop.UDisks2.policy.in
 +++ b/data/org.freedesktop.UDisks2.policy.in
 @@ -16,8 +16,8 @@

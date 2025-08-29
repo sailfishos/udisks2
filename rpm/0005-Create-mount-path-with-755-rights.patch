@@ -9,7 +9,7 @@ Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index 9f4880ad..5ca31865 100644
+index 9f4880ad8716c69bb2977ff25a89dc30d6f762fe..5ca318656fdbfceec71de9b6a88f1268a048612d 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
 @@ -752,7 +752,7 @@ calculate_mount_point (UDisksDaemon  *daemon,

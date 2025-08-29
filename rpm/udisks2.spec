@@ -7,7 +7,7 @@
 
 Name:    udisks2
 Summary: Disk Manager
-Version: 2.10.1
+Version: 2.10.2
 Release: 1
 License: GPLv2+
 URL:     https://github.com/storaged-project/udisks

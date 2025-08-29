@@ -13,7 +13,7 @@ Signed-off-by: Björn Bidar <bjorn.bidar@jolla.com>
  2 files changed, 29 insertions(+), 3 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 69c43ee7..e4b56e93 100644
+index ffb0376ab5c9e386343043bb6e1d29bc4f409293..3e1efb5fd7a93a9cd3914d5794a63969c6948541 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -172,9 +172,19 @@ if test "x$enable_daemon" = "xyes"; then
@@ -48,7 +48,7 @@ index 69c43ee7..e4b56e93 100644
  
          compiler:                   ${CC}
 diff --git a/src/udiskslinuxdriveata.c b/src/udiskslinuxdriveata.c
-index b86c3465..33d3efc5 100644
+index b86c3465a10dd1cd8813dd2972f6b1b25ad966bc..33d3efc50a02e38b6bb0eb2e3445983bf5f03533 100644
 --- a/src/udiskslinuxdriveata.c
 +++ b/src/udiskslinuxdriveata.c
 @@ -37,7 +37,9 @@
