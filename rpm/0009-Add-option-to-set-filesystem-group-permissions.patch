@@ -14,10 +14,10 @@ When also setting the set-group-permissions option true, the permission is set t
  4 files changed, 18 insertions(+), 4 deletions(-)
 
 diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
-index 6285e9e8..38208167 100644
+index ec3a8297b67a8e135e6facbffc2318c444cd7238..bef78a09d9f297337506ed7ebbfed65296aaf765 100644
 --- a/src/udiskslinuxblock.c
 +++ b/src/udiskslinuxblock.c
-@@ -3399,6 +3399,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+@@ -3407,6 +3407,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
    gid_t caller_gid;
    /* D-Bus options */
    gboolean take_ownership = FALSE;
@@ -25,7 +25,7 @@ index 6285e9e8..38208167 100644
    GString *encrypt_passphrase = NULL;
    const gchar *encrypt_type = NULL;
    const gchar *erase_type = NULL;
-@@ -3429,6 +3430,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+@@ -3437,6 +3438,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
    udisks_state_check_block (state, udisks_linux_block_object_get_device_number (UDISKS_LINUX_BLOCK_OBJECT (object)));
  
    g_variant_lookup (options, "take-ownership", "b", &take_ownership);
@@ -33,7 +33,7 @@ index 6285e9e8..38208167 100644
    udisks_variant_lookup_binary (options, "encrypt.passphrase", &encrypt_passphrase);
    g_variant_lookup (options, "encrypt.type", "&s", &encrypt_type);
    g_variant_lookup (options, "erase", "&s", &erase_type);
-@@ -3731,7 +3733,8 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+@@ -3739,7 +3741,8 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
        (fs_features->features & BD_FS_FEATURE_OWNERS) == BD_FS_FEATURE_OWNERS)
      {
        if (!take_filesystem_ownership (udisks_block_get_device (block_to_mkfs),
@@ -44,7 +44,7 @@ index 6285e9e8..38208167 100644
            g_prefix_error (&error, "Failed to take ownership of the newly created filesystem: ");
            handle_format_failure (invocation, error);
 diff --git a/src/udiskslinuxfilesystem.c b/src/udiskslinuxfilesystem.c
-index 970cf3be..02589fa2 100644
+index 970cf3bec3c32177de069e6de14804535306ea8d..02589fa230feac275ad6ef4f5a2943a2e38e3704 100644
 --- a/src/udiskslinuxfilesystem.c
 +++ b/src/udiskslinuxfilesystem.c
 @@ -2486,10 +2486,12 @@ handle_take_ownership (UDisksFilesystem      *filesystem,
@@ -69,7 +69,7 @@ index 970cf3be..02589fa2 100644
      {
        g_dbus_method_invocation_return_error (invocation,
 diff --git a/src/udiskslinuxfilesystemhelpers.c b/src/udiskslinuxfilesystemhelpers.c
-index 7c5fc037..c5d0071a 100644
+index 994a634de27805329e6404783d975fe486eeb74e..8895c8088313f3a106bbe1683960d0940c1a9f19 100644
 --- a/src/udiskslinuxfilesystemhelpers.c
 +++ b/src/udiskslinuxfilesystemhelpers.c
 @@ -119,6 +119,7 @@ take_filesystem_ownership (const gchar  *device,
@@ -80,7 +80,7 @@ index 7c5fc037..c5d0071a 100644
                             GError      **error)
  
  {
-@@ -126,6 +127,7 @@ take_filesystem_ownership (const gchar  *device,
+@@ -127,6 +128,7 @@ take_filesystem_ownership (const gchar  *device,
    GError *local_error = NULL;
    gboolean unmount = FALSE;
    gboolean success = TRUE;
@@ -88,7 +88,7 @@ index 7c5fc037..c5d0071a 100644
  
    mountpoint = bd_fs_get_mountpoint (device, &local_error);
    if (mountpoint == NULL)
-@@ -173,11 +175,16 @@ take_filesystem_ownership (const gchar  *device,
+@@ -181,11 +183,16 @@ take_filesystem_ownership (const gchar  *device,
    if (! success)
      goto out;
  
@@ -109,7 +109,7 @@ index 7c5fc037..c5d0071a 100644
        goto out;
      }
 diff --git a/src/udiskslinuxfilesystemhelpers.h b/src/udiskslinuxfilesystemhelpers.h
-index a6ed271d..98761720 100644
+index a6ed271d060ed9ca049db2c31211dd86b5f7a62b..987617207ce8f2f732b600079abd8f41484badf5 100644
 --- a/src/udiskslinuxfilesystemhelpers.h
 +++ b/src/udiskslinuxfilesystemhelpers.h
 @@ -36,6 +36,7 @@ gboolean take_filesystem_ownership (const gchar *device,

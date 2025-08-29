@@ -18,7 +18,7 @@ Signed-off-by: Björn Bidar <bjorn.bidar@jolla.com>
  7 files changed, 91 insertions(+), 22 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 010269e7..69c43ee7 100644
+index fb82bc3fe90d8a5c60032c41022e91bc880f6f95..ffb0376ab5c9e386343043bb6e1d29bc4f409293 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -489,23 +489,31 @@ if test "x$enable_daemon" = "xyes"; then
@@ -85,7 +85,7 @@ index 010269e7..69c43ee7 100644
 +        LibBlockDev-mdraid:         ${have_blockdev_mdraid:-no}
  "
 diff --git a/src/Makefile.am b/src/Makefile.am
-index 5a174d1a..21adaf46 100644
+index 2e42844c0e1ed33c8b1a54703100c98cede7b345..48f5be753b99cbfb43f03f5c9da2386f7753bf98 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
 @@ -79,9 +79,6 @@ libudisks_daemon_la_SOURCES =
@@ -113,7 +113,7 @@ index 5a174d1a..21adaf46 100644
  	-I$(top_srcdir)                                                        \
  	-DG_LOG_DOMAIN=\"udisks\"                                              \
 diff --git a/src/udisksdaemon.c b/src/udisksdaemon.c
-index cdb9e647..fcfb17cf 100644
+index cdb9e6477b1ffe1853e36794fa97baa2e67894dc..fcfb17cfb7d9aff128085bbc6cf625ad7cf47679 100644
 --- a/src/udisksdaemon.c
 +++ b/src/udisksdaemon.c
 @@ -323,7 +323,9 @@ udisks_daemon_constructed (GObject *object)
@@ -141,7 +141,7 @@ index cdb9e647..fcfb17cf 100644
    error = NULL;
  
 diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
-index 829dd5f7..0f83f35e 100644
+index a3fa183beba7942d4d40802c95036fae29c32337..43461886f22ce0ef3c5c9e550ef9fbd9148f6a08 100644
 --- a/src/udiskslinuxblock.c
 +++ b/src/udiskslinuxblock.c
 @@ -62,7 +62,6 @@
@@ -192,7 +192,7 @@ index 829dd5f7..0f83f35e 100644
   out:
    g_dbus_interface_skeleton_flush (G_DBUS_INTERFACE_SKELETON (block));
 diff --git a/src/udiskslinuxmanager.c b/src/udiskslinuxmanager.c
-index 5bfeec10..f6213f0b 100644
+index 317d7ce6a5ccf776b9f45314f34ccc1a3f17e040..e4965e086f6b1425b5f6948db4da67805aa8e24a 100644
 --- a/src/udiskslinuxmanager.c
 +++ b/src/udiskslinuxmanager.c
 @@ -35,7 +35,9 @@
@@ -270,7 +270,7 @@ index 5bfeec10..f6213f0b 100644
  
  
 diff --git a/src/udiskslinuxmdraidobject.c b/src/udiskslinuxmdraidobject.c
-index 7de0618a..5e3f3f94 100644
+index 7de0618a8a24d6333287d31165194c0ae02d4cf4..5e3f3f94bc3142042631c06e30e6791ad88f3c08 100644
 --- a/src/udiskslinuxmdraidobject.c
 +++ b/src/udiskslinuxmdraidobject.c
 @@ -432,7 +432,11 @@ mdraid_update (UDisksLinuxMDRaidObject  *object,
@@ -302,7 +302,7 @@ index 7de0618a..5e3f3f94 100644
  
  /* ---------------------------------------------------------------------------------------------------- */
 diff --git a/src/udiskslinuxprovider.c b/src/udiskslinuxprovider.c
-index a44e92bf..d59fa27d 100644
+index a44e92bff9845534351b9b3ef5cb690f5e2782fc..d59fa27d13619a7df470a3861c593289b45f5338 100644
 --- a/src/udiskslinuxprovider.c
 +++ b/src/udiskslinuxprovider.c
 @@ -30,7 +30,6 @@

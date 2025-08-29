@@ -8,7 +8,7 @@ Subject: [PATCH] Add workaround in case gtk-doc isn't installed
  1 file changed, 15 insertions(+), 2 deletions(-)
 
 diff --git a/autogen.sh b/autogen.sh
-index 008982bf..8880c9d3 100755
+index 008982bf4644696ab133932b87b08004f05357c3..8880c9d3429c784d1f41be75e7d45bd11902731d 100755
 --- a/autogen.sh
 +++ b/autogen.sh
 @@ -15,13 +15,26 @@ cd "$srcdir"

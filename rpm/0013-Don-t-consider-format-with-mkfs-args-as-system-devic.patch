@@ -15,10 +15,10 @@ passed or not.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/udiskslinuxblock.c b/src/udiskslinuxblock.c
-index 38208167..e989f2a6 100644
+index bef78a09d9f297337506ed7ebbfed65296aaf765..c9ffa614849afee8c625e836062e307cbbce44c3 100644
 --- a/src/udiskslinuxblock.c
 +++ b/src/udiskslinuxblock.c
-@@ -3510,7 +3510,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
+@@ -3518,7 +3518,7 @@ udisks_linux_block_handle_format (UDisksBlock             *block,
                            options,
                            invocation,
                            g_strcmp0 (erase_type, "ata-secure-erase") == 0 || g_strcmp0 (erase_type, "ata-secure-erase-enhanced") == 0,

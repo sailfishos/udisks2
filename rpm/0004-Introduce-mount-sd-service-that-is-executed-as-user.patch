@@ -14,7 +14,7 @@ Subject: [PATCH] Introduce mount-sd service that is executed as user
  create mode 100644 tools/udisksctl-user
 
 diff --git a/data/80-udisks2.rules b/data/80-udisks2.rules
-index 00cf4a04..36eff0ac 100644
+index 00cf4a04427676a9bf04520d43206306f0483e18..36eff0acacd5b9ff61708a7d7919a05f0cdf9a6c 100644
 --- a/data/80-udisks2.rules
 +++ b/data/80-udisks2.rules
 @@ -48,6 +48,11 @@ KERNEL=="mmcblk[0-9]*", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", ENV{MMC_TYPE}==
@@ -30,7 +30,7 @@ index 00cf4a04..36eff0ac 100644
  KERNEL=="mmcblk[0-9]boot[0-9]*", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", IMPORT{parent}="ID_*"
  # ditto for memstick
 diff --git a/data/Makefile.am b/data/Makefile.am
-index 946823de..6fe67dbd 100644
+index 946823de5c40e169fe0138696fedd8bb287ff0ec..6fe67dbdcdb23422e81bf3f076d3a49991494eb3 100644
 --- a/data/Makefile.am
 +++ b/data/Makefile.am
 @@ -18,14 +18,17 @@ dbusconf_DATA = $(dbusconf_in_files:.conf.in=.conf)
@@ -55,7 +55,7 @@ index 946823de..6fe67dbd 100644
  udevrulesdir = $(udevdir)/rules.d
 diff --git a/data/mount-sd@.service.in b/data/mount-sd@.service.in
 new file mode 100644
-index 00000000..b61f0e4c
+index 0000000000000000000000000000000000000000..b61f0e4c5b807095aab0866c5df796fbb0e06dae
 --- /dev/null
 +++ b/data/mount-sd@.service.in
 @@ -0,0 +1,13 @@
@@ -73,7 +73,7 @@ index 00000000..b61f0e4c
 +ExecStart=@bindir@/udisksctl-user mount $UDISKS2_MOUNT_OPTIONS -b /dev/%i
 +ExecStop=@bindir@/udisksctl unmount -b /dev/%i
 diff --git a/tools/Makefile.am b/tools/Makefile.am
-index 5f9a84ac..f4a1d287 100644
+index 5f9a84accb7aad270af26d97f6cac68027d6a421..f4a1d2877b9ccacceba262b4ef46b04437cd0c13 100644
 --- a/tools/Makefile.am
 +++ b/tools/Makefile.am
 @@ -36,6 +36,9 @@ udisksctl_LDADD =                                                              \
@@ -88,7 +88,7 @@ index 5f9a84ac..f4a1d287 100644
  if ENABLE_DAEMON
 diff --git a/tools/udisksctl-user b/tools/udisksctl-user
 new file mode 100644
-index 00000000..04a745d2
+index 0000000000000000000000000000000000000000..04a745d26ab717088344eeda1fdd7dc0d84db898
 --- /dev/null
 +++ b/tools/udisksctl-user
 @@ -0,0 +1,4 @@
